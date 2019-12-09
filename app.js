@@ -1,6 +1,23 @@
 const express = require('express');
-
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const app = express();
+
+const mongoose = require('mongoose');
+mongoose
+    .connect('mongodb://localhost:27017/facebooks', {useNewUrlParser: true, useUnifiedTopology: true})
+    .then(()=>{
+        console.log('Connect DB success')
+    })
+    .catch((e)=>{
+        console.log('Could not connect DB')
+    })
+
+app.use(cookieParser());
+
+app.use(bodyParser.json({ limit: '100kb'}));
+app.use(bodyParser.urlencoded({extended: true})); // handling form
+
 
 
 app.use(function(req, res, next) {
@@ -19,5 +36,10 @@ app.get('/api/test', (req, res)=>{
     })
 })
 
+app.use((err, req, res, next)=>{
+    res.status(err.statusCode).send({
+        message: err.message
+    })
+})
 
 module.exports = { app }

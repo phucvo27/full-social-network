@@ -3,15 +3,19 @@ const { Like } = require('./Like');
 const { Comment } = require('./Comment');
 
 const postSchema = new mongoose.Schema({
-    title: String,
+    content: String,
     withImage: {
         type: Boolean,
         default: false
     },
-    image: String,
+    image: {
+        type: String,
+        default: null
+    },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: [true, 'Need to have owner']
     }
 }, {
     timestamps: {

@@ -13,6 +13,10 @@ const messageSchema = new mongoose.Schema({
     roomChat: {
         type: String,
         required: [true, 'Must provide the room chat']
+    },
+    message: {
+        type: String,
+        minlength: 1
     }
 }, {
     timestamps: {

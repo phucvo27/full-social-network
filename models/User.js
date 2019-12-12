@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator')
-const bcryptjs = require('bcryptjs');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -18,17 +19,13 @@ const userSchema = new mongoose.Schema({
             validator: function(email){
                 return validator.isEmail(email)
             },
-            message: `${email} is not a valid email`
+            message: (email) => `${email} is not a valid email`
         }
     },
     password: {
         type: String,
         required: [true , 'please provide a password'],
         minlength: 6
-    },
-    passwordConfirm: {
-        type: String,
-        required: [true, 'please provide the confirm of your password']
     },
     avatar: {
         type: String,
@@ -53,7 +50,16 @@ const userSchema = new mongoose.Schema({
             avatar: String,
             uid: mongoose.Schema.Types.ObjectId
         }
-    ]
+    ],
+    tokens: {
+        type: [String],
+        default: []
+    },
+    tokenResetPassword: {
+        type: String,
+        default: null
+    },
+    tokenResetExpired: Date
 }, {
     timestamps: {
         createdAt: 'created_at',
@@ -66,10 +72,10 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.toJSON = function(){
-    const { username, uid, avatar,} = this;
+    const { username, _id, avatar, thumb} = this;
     return {
         username,
-        uid,
+        uid: _id,
         avatar,
         thumb
     }
@@ -81,10 +87,58 @@ userSchema.pre('save', async function(next){
         next();
     }
     this.password = await bcrypt.hash(this.password, 12);
-    this.passwordConfirm = undefined; 
     next();
 
 })
+
+userSchema.methods.generateToken = async function(){
+    const user = this;
+    const token = jwt.sign(
+        {
+            uid: user._id,
+        }, 
+        'ThisIsTheSecretMessage',
+        {
+            expiresIn: '12h'
+        })
+    user.tokens = [...user.tokens, token];
+    try {
+        await user.save();
+        return token;
+    }catch(e){
+        throw new Error('Could not generate new Token');
+    }
+    
+}
+
+userSchema.methods.isTokenStillValid = async function(token){
+    const user = this;
+
+    const tokenIndex = user.tokens.findIndex( item => item === token);
+    if(tokenIndex !== -1){
+        return true;
+    }else{
+        throw new Error('Token is invalid')
+    }
+}
+
+userSchema.statics.verifyAccount = async function(email, password){
+    const User = this;
+
+    const user = await User.findOne({email}); // return null if email doesnt exist
+
+    if(user){
+        const isCorrectPassword = await bcrypt.compare(password, user.password);
+        if(isCorrectPassword){
+            return user;
+        }else{
+            throw new Error('Your password is not valid')
+        }
+    }else{
+        throw new Error('Your email is not valid')
+    }
+}
+
 
 const User = mongoose.model('User', userSchema);
 

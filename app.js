@@ -1,11 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const app = express();
+const { authRouter } = require('./routes/authRoutes');
+const { postRouter } = require('./routes/postRoutes')
+const { messageRouter } = require('./routes/messageRoutes');
 
+const app = express();
 const mongoose = require('mongoose');
 mongoose
-    .connect('mongodb://localhost:27017/facebooks', {useNewUrlParser: true, useUnifiedTopology: true})
+    .connect('mongodb://localhost:27017/facebooks-dev', {useNewUrlParser: true, useUnifiedTopology: true})
     .then(()=>{
         console.log('Connect DB success')
     })
@@ -19,22 +22,23 @@ app.use(bodyParser.json({ limit: '100kb'}));
 app.use(bodyParser.urlencoded({extended: true})); // handling form
 
 
-
+// app.use(async (req, res, next)=>{
+//     const user = await User.findById("5df0a7f6193e780ea93b3e5f");
+//     console.log(user);
+//     next()
+// })
 app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    // res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Origin", "*");
+    //res.header("Access-Controll-Allow-Methods", "OPTIONS, GET, PUT, POST, DELETE, PATCH")
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
 
-app.get('/', (req, res)=>{
-    res.send('Hi from server')
-});
 
-app.get('/api/test', (req, res)=>{
-    res.send({
-        test: 'This is testing message'
-    })
-})
+app.use('/api/auth', authRouter);
+app.use('/api/posts', postRouter);
+app.use('/api/messages', messageRouter);
 
 app.use((err, req, res, next)=>{
     res.status(err.statusCode).send({

@@ -72,12 +72,13 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.toJSON = function(){
-    const { username, _id, avatar, thumb} = this;
+    const { username, _id, avatar, thumb, friends} = this;
     return {
         username,
         uid: _id,
         avatar,
-        thumb
+        thumb,
+        friends
     }
 }
 

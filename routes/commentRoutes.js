@@ -4,10 +4,11 @@ const commentController = require('../controllers/commentControllers');
 
 commentRouter
     .route('/')
+    .get(commentController.getAllComment)
     .post(commentController.createComment)
 
 commentRouter
-    .route('/commentID')
+    .route('/:commentID')
     .put(commentController.updateComment)
     .delete(commentController.deleteComment)
 

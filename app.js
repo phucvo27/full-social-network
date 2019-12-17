@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const { authRouter } = require('./routes/authRoutes');
 const { postRouter } = require('./routes/postRoutes')
 const { messageRouter } = require('./routes/messageRoutes');
+const cors = require('cors');
 
 const app = express();
 const mongoose = require('mongoose');
@@ -21,19 +22,26 @@ app.use(cookieParser());
 app.use(bodyParser.json({ limit: '100kb'}));
 app.use(bodyParser.urlencoded({extended: true})); // handling form
 
-
+const corsOptions = {
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token', 'Authorization'],
+    credentials: true,
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    origin: "http://localhost:3000",
+    preflightContinue: false,
+};
+app.use(cors(corsOptions))
 // app.use(async (req, res, next)=>{
 //     const user = await User.findById("5df0a7f6193e780ea93b3e5f");
 //     console.log(user);
 //     next()
 // })
-app.use(function(req, res, next) {
-    // res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header("Access-Control-Allow-Origin", "*");
-    //res.header("Access-Controll-Allow-Methods", "OPTIONS, GET, PUT, POST, DELETE, PATCH")
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+// app.use(function(req, res, next) {
+//     // res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+//     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+//     //res.header("Access-Controll-Allow-Methods", "OPTIONS, GET, PUT, POST, DELETE, PATCH")
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// });
 
 
 app.use('/api/auth', authRouter);

@@ -6,8 +6,8 @@ const ObjectId = require('mongoose').Types.ObjectId;
 exports.getAllMessage = catchAsync( async(req, res, next)=>{
     const sentTo = `${req.params.friendID}`;
     const sentBy = `${req.user}`;
-
-    if(sentTo.length === 12 && (new ObjectId(sentTo) === sentTo) && sentBy === 12 && (new ObjectId(sentBy) === sentBy)){
+    
+    if(ObjectId.isValid(sentTo) && ObjectId.isValid(sentBy)){
         let roomChat = null;
 
         if(sentTo > sentBy){
@@ -15,8 +15,7 @@ exports.getAllMessage = catchAsync( async(req, res, next)=>{
         }else{
             roomChat = `${sentTo}-${sentBy}`;
         }
-        const messages = await Message.find({roomChat});
-        console.log(messages);
+        const messages = await Message.find({roomChat}); // return [] if have no message
         res.status(200).send({
             status: 'success',
             data: messages
@@ -32,7 +31,7 @@ exports.createMessage = catchAsync( async (req, res, next)=>{
     const sentBy = `${req.user}`;
     const { message } = req.body;
     if(message) {
-        if(sentTo.length === 12 && (new ObjectId(sentTo) === sentTo) && sentBy === 12 && (new ObjectId(sentBy) === sentBy)){
+        if(ObjectId.isValid(sentTo) && ObjectId.isValid(sentBy)){
             let roomChat = null;
     
             if(sentTo > sentBy){

@@ -2,7 +2,7 @@ const { User } = require('../models/User');
 const { AppError } = require('../utils/AppError');
 
 const { catchAsync } = require('../utils/CatchAsync')
-
+const jwt = require('jsonwebtoken');
 
 const generateToken = async (res, user) => {
     try{
@@ -16,7 +16,7 @@ const generateToken = async (res, user) => {
         if(process.env.NODE_ENV === "production") cookieOptions.secure = true;
         res.cookie('jwt', token, cookieOptions);
         res.status(200).send({
-            status: 'Success',
+            status: 'success',
             token,
             data: {
                 user
@@ -33,6 +33,7 @@ const generateToken = async (res, user) => {
 }
 exports.loginHandler = catchAsync( async (req, res, next )=>{
     const { email , password } = req.body;
+    console.log(email, password)
     try {
         const user = await User.verifyAccount(email, password);
         generateToken(res, user);
@@ -42,6 +43,17 @@ exports.loginHandler = catchAsync( async (req, res, next )=>{
     
 })
 
+exports.logOutHandler = catchAsync( async (req, res, next)=>{
+    const cookieOptions = {
+        httpOnly: true
+    }
+    if(process.env.NODE_ENV === "production") cookieOptions.secure = true;
+    res.cookie('jwt', '');
+    res.status(200).send({
+        status: 'success',
+        message: 'You are logout success'
+    })
+})
 exports.signUpHandler = catchAsync( async (req, res, next)=>{
     const { username, email, password, passwordConfirm } = req.body;
 
@@ -66,5 +78,37 @@ exports.signUpHandler = catchAsync( async (req, res, next)=>{
         }
     }else{
         next(new AppError(400, 'Missing required field, please check again'))
+    }
+})
+
+exports.checkSession = catchAsync( async (req, res, next)=>{
+    const token = req.cookies.jwt;
+    console.log(req.cookies)
+    console.log(token)
+    if(token){
+        try {
+            const tokenData = jwt.verify(token, 'ThisIsTheSecretMessage');
+            console.log(tokenData)
+            const user = await User.findById(tokenData.uid); // return null if doc doesnt exist
+            if(user){
+                const isValid = user.isTokenStillValid(token);
+                if(isValid){
+                    res.status(200).send({
+                        status: 'success',
+                        data: user
+                    })
+                }else{
+                    next(new AppError(400, 'Invalid Token'))
+                }
+            }else{
+                next(new AppError(400, 'Invalid User'))
+            }
+        }catch(e){
+            console.log(e)
+            next(new AppError(400, 'Your token is invalid'))
+        }
+    }else{
+        console.log('eeor')
+        next(new AppError(400, 'Please Login first'))
     }
 })

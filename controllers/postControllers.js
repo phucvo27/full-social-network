@@ -36,49 +36,58 @@ exports.createPost = catchAsync(async (req, res, next)=>{
 exports.updatePost = catchAsync( async (req, res, next)=>{
     const postID = req.params.postID;
     const { content, withImage } = req.body;
-    const post = await Post.findById(postID);
-    if(post){
-        if(content || withImage){
-            if(content){
-                post.content = content;
+    if(ObjectId.isValid(postID)){
+        const post = await Post.findById(postID);
+        if(post){
+            if(content || withImage){
+                if(content){
+                    post.content = content;
+                }
+                if(withImage){
+                    // still not coding
+                }
+                const newPost = await post.save();
+                res.status(200).send({
+                    status: 'success',
+                    message: 'update success',
+                    data: newPost
+                })
+            }else{
+                next(new AppError(400, 'Missing required field'))
             }
-            if(withImage){
-                // still not coding
-            }
-            const newPost = await post.save();
-            res.status(200).send({
-                status: 'success',
-                message: 'update success',
-                data: newPost
-            })
         }else{
-            next(new AppError(400, 'Missing required field'))
+            next(new AppError(400, 'Your post doesnt exist'));
         }
     }else{
-        next(new AppError(400, 'Your post doesnt exist'));
+        next(new AppError(400, 'Post id is invalid'))
     }
+    
 })
 
 
 exports.deletePost = catchAsync(async(req, res, next)=>{
     const postID = req.params.postID;
-    try {
-        const postRemoved = await Post.findOneAndDelete({_id: postID});
-        res.status(200).send({
-            status: 'success',
-            message: 'Your post is removed',
-            data: postRemoved
-        })
-    }catch(e){
-        next(new AppError(500, 'Could not delete the post'))
+    if(ObjectId.isValid(postID)){
+        try {
+            const postRemoved = await Post.findOneAndDelete({_id: postID});// return the document that is removed
+            res.status(200).send({
+                status: 'success',
+                message: 'Your post is removed',
+                data: postRemoved
+            })
+        }catch(e){
+            next(new AppError(500, 'Could not delete the post'))
+        }
+    }else{
+        next(new AppError(400, 'Post id is invalid'))
     }
+    
 })
 
 exports.getPost = catchAsync(async(req, res, next)=>{
     const postID = req.params.postID;
-
     // Checking post id is valid -> if valid it must have 12 character , and after casting it will be same 
-    if(postID.length === 12 && (new ObjectId(postID) === postID)){
+    if(ObjectId.isValid(postID)){
         const post = await Post.findById(postID);
         if(post){
             res.status(200).send({

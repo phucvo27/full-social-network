@@ -4,13 +4,26 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const { catchAsync } = require('../utils/CatchAsync');
 const { AppError } = require('../utils/AppError');
 
+exports.getAllComment = catchAsync( async (req, res, next)=>{
+
+    const postID = req.params.postID;
+    if(ObjectId.isValid(postID)){
+        const comments = await Comment.find({postID});
+        res.status(200).send({
+            status: 'success',
+            data: comments
+        })
+    }else{
+        next( new AppError(400, 'Post id is invalid'))
+    }
+})
 
 exports.createComment = catchAsync(async (req, res, next)=>{
     const postID = req.params.postID;
     const owner = req.user;
     const { content } = req.body;
     if(content){
-        if(postID.length === 12 && (new ObjectId(postID) === postID)){
+        if(ObjectId.isValid(postID)){
             // Check does that post still exist
             try{
                 const post = await Post.findById(postID);
@@ -41,23 +54,29 @@ exports.createComment = catchAsync(async (req, res, next)=>{
 })
 
 exports.updateComment = catchAsync( async(req, res, next)=>{
-    const commentID = req.params.commentID;
+    const {commentID , postID} = req.params;
     const { content } = req.body;
     if(content){
         // checking commentID
-        if(commentID.length === 12 && ( new ObjectId(commentID) === commentID)){
+        if(ObjectId.isValid(commentID) && ObjectId.isValid(postID)){
             try {
-                const comment = await Comment.findById(commentID);
-                if(comment){
-                    comment.content = content;
-                    const newComment = await comment.save();
-                    res.status(200).send({
-                        status: 'success',
-                        data: newComment
-                    })
+                const post = await Post.findById(postID);
+                if(post){
+                    const comment = await Comment.findById(commentID);
+                    if(comment){
+                        comment.content = content;
+                        const newComment = await comment.save();
+                        res.status(200).send({
+                            status: 'success',
+                            data: newComment
+                        })
+                    }else{
+                        next(new AppError(400, 'The comment doesnt exist'))
+                    }
                 }else{
-                    next(new AppError(400, 'The comment doesnt exist'))
+                    next( new AppError(404, 'This post doesnt exist'))
                 }
+                
             }catch(e){
                 next(new AppError(500, 'Something went wrong when find that comment'))
             }
@@ -70,13 +89,19 @@ exports.updateComment = catchAsync( async(req, res, next)=>{
 })
 
 exports.deleteComment = catchAsync( async (req, res, next)=>{
-    const commentID = req.params.commentID;
-    if(commentID.length === 12 && (new ObjectId(commentID) === commentID)){
-        const commentRemoved = await Comment.findByIdAndDelete(commentID);
-        res.status(200).send({
-            status: 'success',
-            data: commentRemoved
-        })
+    const {commentID, postID} = req.params;
+    if(ObjectId.isValid(commentID) && ObjectId.isValid(postID)){
+        const post = await Post.findById(postID);
+        if(post){
+            const commentRemoved = await Comment.findByIdAndDelete(commentID);
+            res.status(200).send({
+                status: 'success',
+                data: commentRemoved
+            })
+        }else{
+            next( new AppError(404, 'This post doesnt exist'))
+        }
+        
     }else{
         next(new AppError(400, 'Comment id is invalid'))
     }

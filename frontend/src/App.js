@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import Header from './components/Header/Header.component';
 import LoginPage from './pages/Login/Login.component';
 import HomePage from './pages/Home/Home.component';
-import { setCurrentUser, userLoginFail } from './redux/user/user.actions';
-import axios from 'axios'
-
+import { setCurrentUser } from './redux/user/user.actions';
 //import getSocket from './utils/getSocketConnection';
 
 class App extends React.Component {
@@ -20,11 +18,12 @@ class App extends React.Component {
 
     async componentDidMount(){
         try{
-            const res = await axios.get('http://localhost:5000/api/auth/check-session', {withCredentials: true});
-            console.log(res)
+            const res = await fetch('http://localhost:5000/api/auth/check-session', {
+                credentials: 'include'
+            });
             if(res.status === 200){
-                console.log(res.data)
-                this.props.dispatch(setCurrentUser(res.data.data));
+                const jsonData = await res.json();
+                this.props.dispatch(setCurrentUser(jsonData.data.user));
                 
             }
         }catch(e){

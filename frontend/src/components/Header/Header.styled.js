@@ -71,8 +71,8 @@ export const HeaderItem = styled.div`
     position: relative;
     cursor: pointer;
     > .icon {
-        height: 1.6rem;
-        width: 1.6rem;
+        height: 2rem;
+        width: 2rem;
         fill: 'yellow'
     }
     > .notification{
@@ -87,7 +87,7 @@ export const HeaderItem = styled.div`
         align-items: center;
         position: absolute;
         top: -1rem;
-        right: -1rem;
+        right: -.5rem;
     }
     &.User {
         display: flex;

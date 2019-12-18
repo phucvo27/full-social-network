@@ -43,6 +43,10 @@ app.use(cors(corsOptions))
 //     next();
 // });
 
+app.use((req, res, next)=>{
+    console.log(`new request at : ${req.path}`)
+    next()
+})
 
 app.use('/api/auth', authRouter);
 app.use('/api/posts', postRouter);

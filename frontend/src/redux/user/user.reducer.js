@@ -2,8 +2,7 @@ import {
     SET_CURRENT_USER,
     USER_LOGIN_SUCCESS,
     USER_LOGIN_FAIL,
-    USER_LOGOUT,
-    USER_LOGOUT_FAIL
+    USER_LOGOUT_SUCCESS,
  } from './user.types';
 
 const INIT_STATE = {
@@ -24,13 +23,16 @@ export const userReducer = (state = INIT_STATE, action) => {
                 currentUser: action.payload,
                 error: null
             };
-        case USER_LOGIN_FAIL:
-        case USER_LOGOUT: 
+        case USER_LOGIN_FAIL: 
             return {
                 ...state,
-                error: action.payload.error
+                currentUser: null
             }
-        case USER_LOGOUT_FAIL:
+        case USER_LOGOUT_SUCCESS: 
+            return {
+                ...state,
+                currentUser: null
+            }
         default:
             return state;
     }

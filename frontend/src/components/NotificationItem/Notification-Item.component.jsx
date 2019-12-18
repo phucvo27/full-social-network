@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wrapper, AvatarNotification, ContentNotification } from './Notification-Item.styled';
+import { Wrapper, AvatarNotification, ContentNotification } from './Notification-Item.styled'
 
 const NotificationItem = ({avatar})=>{
     return (

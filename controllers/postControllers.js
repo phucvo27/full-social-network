@@ -2,6 +2,7 @@ const { Post } = require('../models/Post');
 const { AppError } = require('../utils/AppError');
 const { catchAsync } = require('../utils/CatchAsync');
 const ObjectId = require('mongoose').Types.ObjectId;
+const sharp = require('sharp');
 
 exports.getAllPost = catchAsync(async (req, res, next)=>{
     const uid = req.user;
@@ -11,6 +12,20 @@ exports.getAllPost = catchAsync(async (req, res, next)=>{
         status: 'success',
         data: posts
     })
+})
+
+exports.resizeImageInPost = catchAsync(async(req, res, next)=>{
+    if(!req.file){
+        return next();
+    }
+    req.file.filename = `post-${req.user}-${Date.now()}`;
+    req.filePath = `public/img/posts/${req.file.filename}.jpeg`
+    await sharp(req.file.buffer)
+            .resize(800 ,600)
+            .toFormat('jpeg')
+            .jpeg({quality: 90})
+            .toFile(req.filePath);
+    next();
 })
 
 exports.createPost = catchAsync(async (req, res, next)=>{
@@ -28,7 +43,17 @@ exports.createPost = catchAsync(async (req, res, next)=>{
             data: newPost
         })
     }else{
-        res.send('still not coding')
+        const post = new Post({
+            content,
+            withImage,
+            image: req.filePath
+        })
+        const newPost = await post.save();
+    
+        res.status(200).send({
+            message: 'success',
+            data: newPost
+        })
     }
 })
 

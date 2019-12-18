@@ -1,7 +1,8 @@
 import React from 'react';
 import FormInput from '../InputField/Input.component'
-import { ReactComponent as Message} from '../../assets/SVG/Message.svg';
-import { ReactComponent as Notification} from '../../assets/SVG/Notification.svg';
+import { ReactComponent as Message} from '../../assets/SVG/Comment.svg';
+import { ReactComponent as Notification} from '../../assets/SVG/Notification-1.svg';
+import { ReactComponent as LogOut} from '../../assets/SVG/LogOut.svg';
 import NotificationItem from '../NotificationItem/Notification-Item.component'
 import { 
     HeaderWrapper,
@@ -13,11 +14,22 @@ import {
     DropdownTitle,
     DropdownContent } from './Header.styled';
 import { connect } from 'react-redux';
+import defaultAvatar from '../../assets/user-1.jpg';
+import { userLogOutStart } from '../../redux/user/user.actions'
 
 class Header extends React.Component{
 
+    handleSignOut = async ()=>{
+        this.props.dispatch(userLogOutStart())
+    }
     render(){
-        console.log(this.props.currentUser)
+        let username;
+        let avatar;
+        if(this.props.user.currentUser){
+            username = this.props.user.currentUser.username;
+            avatar = this.props.user.currentUser.avatar
+        }
+        
         return (
             <HeaderWrapper>
                 <HeaderTitle>Facebook Clone</HeaderTitle>
@@ -55,17 +67,13 @@ class Header extends React.Component{
                                     </DropdownContent>
                                 </Dropdown>
                             </HeaderItem>
-                            <HeaderItem>
-                                <Message fill='#fff' className='icon'/>
-                                <p className='notification'>2</p>
-                                <Dropdown>
-                                    <DropdownTitle>Notification</DropdownTitle>
-                                </Dropdown>
-                            </HeaderItem>
-
+                            
                             <HeaderItem className='User'>
-                                <img src='https://html.crumina.net/html-olympus/img/author-page.jpg' alt='user-avatar'/>
-                                <p>Phuc Vo</p>
+                                <img src= {avatar ? avatar : defaultAvatar} alt='user-avatar'/>
+                                <p>{username ? username : 'Phuc Vo'}</p>
+                            </HeaderItem>
+                            <HeaderItem onClick={this.handleSignOut}>
+                                <LogOut fill='#fff' className='icon'/>
                             </HeaderItem>
                         </HeaderInteract>
                     </React.Fragment>

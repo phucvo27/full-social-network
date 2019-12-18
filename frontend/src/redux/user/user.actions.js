@@ -1,4 +1,4 @@
-import { USER_LOGIN_START, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT, SET_CURRENT_USER } from './user.types'
+import { USER_LOGIN_START, USER_LOGOUT_SUCCESS, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, SET_CURRENT_USER, USER_LOGOUT_START } from './user.types'
 
 
 export const setCurrentUser = ( payload )=>{
@@ -26,8 +26,13 @@ export const userLoginFail = ( payload )=>{
         payload
     }
 }
-export const userLogOut = ()=>{
+export const userLogOutStart = ()=>{
     return {
-        type: USER_LOGOUT
+        type: USER_LOGOUT_START
+    }
+}
+export const userLogOutSuccess = ()=>{
+    return {
+        type: USER_LOGOUT_SUCCESS
     }
 }

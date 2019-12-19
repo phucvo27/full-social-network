@@ -46,7 +46,8 @@ exports.createPost = catchAsync(async (req, res, next)=>{
         const post = new Post({
             content,
             withImage,
-            image: req.filePath
+            image: req.filePath,
+            owner: req.user
         })
         const newPost = await post.save();
     

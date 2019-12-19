@@ -29,6 +29,7 @@ class Header extends React.Component{
             username = this.props.user.currentUser.username;
             avatar = this.props.user.currentUser.avatar
         }
+        console.log(this.props)
         
         return (
             <HeaderWrapper>

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Header from './components/Header/Header.component';
 import LoginPage from './pages/Login/Login.component';
 import HomePage from './pages/Home/Home.component';
+import UserPage from './pages/User/User.component';
 import { setCurrentUser } from './redux/user/user.actions';
 //import getSocket from './utils/getSocketConnection';
 
@@ -68,6 +69,7 @@ class App extends React.Component {
                 <Switch>
                     <Route exact path='/' render={() => currentUser !== null ? <HomePage /> : <LoginPage />} />
                     <Route path='/login' render={() => currentUser !== null ? <Redirect to='/' /> : <LoginPage /> } />
+                    <Route path='/user/:uid' render={(match) => currentUser !== null ? <UserPage match={match} /> : <LoginPage />} />
                 </Switch>
             </BrowserRouter>
         )

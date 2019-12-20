@@ -4,7 +4,10 @@ import {
     POST_CREATE_FAIL,
     GET_ALL_POST_START,
     GET_ALL_POST_SUCCESS,
-    GET_ALL_POST_FAIL
+    GET_ALL_POST_FAIL,
+    ADD_COMMENT_TO_POST_START,
+    ADD_COMMENT_TO_POST_SUCCESS,
+    ADD_COMMENT_TO_POST_FAIL
 } from './post.types';
 
 export const getAllPost = (uid) => {
@@ -46,5 +49,20 @@ export const postCreateSuccess = (payload)=>{
 export const postCreateFail = ()=>{
     return {
         type: POST_CREATE_FAIL
+    }
+}
+
+// Comment
+export const addCommentToPostStart = (payload)=>{
+    return {
+        type: ADD_COMMENT_TO_POST_START,
+        payload
+    }
+}
+
+export const addCommentToPostSuccess = (payload)=>{
+    return {
+        type: ADD_COMMENT_TO_POST_SUCCESS,
+        payload
     }
 }

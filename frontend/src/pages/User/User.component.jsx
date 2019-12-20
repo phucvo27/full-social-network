@@ -34,7 +34,7 @@ class UserPage extends Component{
                 return userPosts.map(post => {
                     if(post.image !== null){
                         const image = post.image.replace("public",'http://localhost:5000')
-                        return <Card key={post._id} listImage={[image]} content={post.content} />
+                        return <Card key={post._id} listImage={[image]} content={post.content} postID={post._id} />
                     }else{
                         return <Card key={post._id} content={post.content} />
                     }

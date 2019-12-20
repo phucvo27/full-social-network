@@ -4,9 +4,11 @@ import {
     POST_CREATE_SUCCESS,
     POST_CREATE_FAIL,
     GET_ALL_POST_START,
-    GET_ALL_POST_SUCCESS
+    ADD_COMMENT_TO_POST_START
 } from './post.types';
 import { getAllPostSuccess } from './post.actions';
+
+const BASE_URL = 'http://localhost:5000/api'
 
 export function* createPost(action){
     
@@ -46,6 +48,26 @@ export function* getAllPost({uid}){
     }
 }
 
+export function* addCommentToPost({payload}){
+    const { postID, comment } = payload;
+    try {
+        const res = yield fetch(`${BASE_URL}/posts/${postID}/comments`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: comment
+        })
+        if(res.status === 200){
+            const jsonData = yield res.json();
+        }else{
+
+        }
+    }catch(e){
+
+    }
+}
 export function* createPostStart(){
     yield takeLatest(POST_CREATE_START, createPost)
 }
@@ -53,6 +75,10 @@ export function* createPostStart(){
 export function* getAllPostStart(){
     yield takeEvery(GET_ALL_POST_START, getAllPost)
 }
+
+export function* addCommentToPostStart(){
+    yield takeEvery(ADD_COMMENT_TO_POST_START, addCommentToPost)
+}
 export function* postSaga(){
-    yield all([call(createPostStart), call(getAllPostStart)])
+    yield all([call(createPostStart), call(getAllPostStart), call(addCommentToPostStart)])
 }

@@ -5,14 +5,48 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const sharp = require('sharp');
 
 exports.getAllPost = catchAsync(async (req, res, next)=>{
-    const uid = req.user;
-    const posts = await Post.find({owner: uid});
-
+    const uid = req.params.uid;
+    
+    const posts = await Post.aggregate(
+        [
+            {
+                $match: {owner: new ObjectId(uid)}
+            },
+            {
+                $lookup: {
+                    from: 'likes',
+                    localField: '_id',
+                    foreignField: 'postID',
+                    as: 'likes'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'comments',
+                    localField: '_id',
+                    foreignField: 'postID',
+                    as: 'comments'
+                }
+            },
+            {
+                $addFields: {
+                    numLikes: {$size: "$likes"},
+                    numComments: {$size: "$comments"}
+                }
+            },
+            {
+                $sort: {
+                    created_at: -1
+                }
+            }
+            
+        ]
+    );
     res.status(200).send({
         status: 'success',
         data: posts
     })
-})
+});
 
 exports.resizeImageInPost = catchAsync(async(req, res, next)=>{
     if(!req.file){

@@ -24,7 +24,8 @@ class App extends React.Component {
             });
             if(res.status === 200){
                 const jsonData = await res.json();
-                this.props.dispatch(setCurrentUser(jsonData.data.user));
+                console.log(jsonData);
+                this.props.dispatch(setCurrentUser(jsonData.data));
                 
             }
         }catch(e){
@@ -69,7 +70,7 @@ class App extends React.Component {
                 <Switch>
                     <Route exact path='/' render={() => currentUser !== null ? <HomePage /> : <LoginPage />} />
                     <Route path='/login' render={() => currentUser !== null ? <Redirect to='/' /> : <LoginPage /> } />
-                    <Route path='/user/:uid' render={(match) => currentUser !== null ? <UserPage match={match} /> : <LoginPage />} />
+                    <Route path='/user/:uid' render={(match) => currentUser !== null ? <UserPage match={match} /> : <Redirect to='/login' />} />
                 </Switch>
             </BrowserRouter>
         )

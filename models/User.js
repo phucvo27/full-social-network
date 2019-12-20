@@ -140,6 +140,13 @@ userSchema.statics.verifyAccount = async function(email, password){
     }
 }
 
+userSchema.statics.removeToken = async function(uid, currentToken){
+    const User = this;
+    const user = await User.findById(uid);
+    user.tokens = user.tokens.filter(token => token !== currentToken);
+    await user.save();
+    return true;
+}
 
 const User = mongoose.model('User', userSchema);
 

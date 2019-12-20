@@ -22,6 +22,7 @@ export const HeaderTitle = styled.h1`
     color: #fff;
     text-transform: uppercase
     margin-right: 2rem;
+    cursor: pointer;
 `
 
 export const HeaderForm = styled.div`

@@ -15,6 +15,13 @@ export const CardTitle = styled.div`
     display: flex;
     justitfy-content: flex-start;
     align-items: center;
+
+    svg {
+        height: 1.6rem;
+        width: 1.6rem;
+        fill: grey;
+        cursor: pointer;
+    }
     
 `
 export const CardAvatar = styled.img`
@@ -105,25 +112,44 @@ export const FriendAvatar = styled.img`
 export const FormComment = styled.div`
 
     margin: 0rem 0rem 2.5rem;
+
+`
+export const FormInput = styled.form`
+
     display: flex;
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
 
-    > *:first-child {
-        flex: 1;
-        margin-right: 1rem;
-    }
+
     input {
+        flex: 1;
+        padding: 1rem 2rem;
+        outline: none;
+        border: none;
+        border-bottom: .1rem solid transparent;
+        font-size: 1.2rem;
         background-color: #fff;
-        border: .1rem solid #dedede;
-        color: #333;
+        ::placeholder{
+            color : #9a9fbf;
+        }
+        :focus{
+            outline: none;
+            border-bottom: .1rem solid orange;
+        }
     }
 
-    input::placeholder{
-        color : #333;
-    }
     button {
+        border: none;
+        background-color: #ff5e3a;
+        margin-left: 2rem;
+        /* height: 100%; */
+        display: inline-block;
         align-self: stretch;
+        padding: 0 2rem;
+        border-radius: .4rem;
+        color: #fff;
+        cursor: pointer;
+        font-size: 1.2rem;
     }
 
 `

@@ -17,6 +17,7 @@ mongoose
         console.log('Could not connect DB')
     })
 
+app.use(express.static('public'))
 app.use(cookieParser());
 
 app.use(bodyParser.json({ limit: '100kb'}));

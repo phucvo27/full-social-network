@@ -1,13 +1,17 @@
 import React from 'react';
-import { CardWrapper, CardTitle, CardAuthor, CardAvatar, CardBody, CardFooter, FriendListLiked, FriendLiked, FriendAvatar, FormComment } from './Card.styled'
+import { 
+    CardWrapper, 
+    CardTitle, 
+    CardAuthor, CardAvatar, CardBody, CardFooter, FriendListLiked, FriendLiked, FriendAvatar, FormComment, FormInput } from './Card.styled'
 import { ReactComponent as Heart } from '../../assets/SVG/Heart.svg';
 import { ReactComponent as Message } from '../../assets/SVG/Message.svg';
+import { ReactComponent as Edit } from '../../assets/SVG/edit.svg';
 import userAvatar from '../../assets/user-1.jpg';
 import userAvatar2 from '../../assets/user-2.jpg';
 import Button from '../Button/Button.component';
-import FormInput from '../InputField/Input.component';
+//import FormInput from '../InputField/Input.component';
 
-const Card = ({ listImage=[] }) => {
+const Card = ({ listImage=[], content }) => {
     return (
         <CardWrapper>
             <CardTitle>
@@ -16,9 +20,10 @@ const Card = ({ listImage=[] }) => {
                     <h1>Phuc Vo</h1>
                     <p>19 hours ago</p>
                 </CardAuthor>
+                <Edit />
             </CardTitle>
             <CardBody>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam illo magni iusto id cum nesciunt laboriosam omnis labore, accusamus quasi illum ipsum rerum a? Hic nulla iste quasi perferendis qui.</p>
+                <p>{content}</p>
                 { listImage.length > 0 && listImage.map((image, idx) => {
                     return (<img key={idx} src={image} alt='post-content' />)
                 })}
@@ -41,11 +46,10 @@ const Card = ({ listImage=[] }) => {
                 <p>17</p>
             </CardFooter>
             <FormComment>
-                <FormInput 
-                    placeholder='Add your comment here'
-                    width='100%'
-                />
-                <Button typeBtn='highlight'>Post Comment</Button>
+                <FormInput>
+                    <input type='text' placeholder='Add comment here..'/>
+                    <button>Add Comment</button>
+                </FormInput>
             </FormComment>
         </CardWrapper>
     )

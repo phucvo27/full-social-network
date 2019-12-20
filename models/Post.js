@@ -28,18 +28,22 @@ const postSchema = new mongoose.Schema({
     }
 })
 
-// create number of likes of post
-postSchema.virtual('likes').get( async function(){
-    console.log(this);
-    const listLike = await Like.find({postID: this._id});
-    return listLike.length;
+
+postSchema.virtual('likes', {
+    ref: 'Like',
+    localField: '_id',
+    foreignField: 'postID'
 })
 
-// postSchema.virtual('likes', {
-//     ref: 'Like',
-//     localField: '_id',
-//     foreignField: 'postID'
-// })
+postSchema.pre(/^find/, function(next){
+
+    console.log('in find middeware')
+    this.populate({
+        path: 'owner',
+        select: 'username _id'
+    })
+    next();
+})
 
 // create number of likes of post
 postSchema.virtual('comments').get( async function(){

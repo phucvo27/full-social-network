@@ -15,7 +15,8 @@ import {
     DropdownContent } from './Header.styled';
 import { connect } from 'react-redux';
 import defaultAvatar from '../../assets/user-1.jpg';
-import { userLogOutStart } from '../../redux/user/user.actions'
+import { userLogOutStart } from '../../redux/user/user.actions';
+import { withRouter } from 'react-router-dom';
 
 class Header extends React.Component{
 
@@ -25,15 +26,17 @@ class Header extends React.Component{
     render(){
         let username;
         let avatar;
+        let uid;
         if(this.props.user.currentUser){
             username = this.props.user.currentUser.username;
-            avatar = this.props.user.currentUser.avatar
+            avatar = this.props.user.currentUser.avatar;
+            uid = this.props.user.currentUser.uid;
         }
         console.log(this.props)
         
         return (
             <HeaderWrapper>
-                <HeaderTitle>Facebook Clone</HeaderTitle>
+                <HeaderTitle onClick={()=>{this.props.history.push(`/`)}}>Facebook Clone</HeaderTitle>
                 {
                     this.props.user.currentUser !== null 
                     &&
@@ -69,7 +72,9 @@ class Header extends React.Component{
                                 </Dropdown>
                             </HeaderItem>
                             
-                            <HeaderItem className='User'>
+                            <HeaderItem className='User' onClick={()=>{
+                                this.props.history.push(`/user/${uid}`)
+                            }}>
                                 <img src= {avatar ? avatar : defaultAvatar} alt='user-avatar'/>
                                 <p>{username ? username : 'Phuc Vo'}</p>
                             </HeaderItem>
@@ -93,4 +98,4 @@ const mapStateToProps = state =>{
     }
 }
 
-export default connect(mapStateToProps)(Header)
+export default withRouter(connect(mapStateToProps)(Header));

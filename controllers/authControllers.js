@@ -48,11 +48,23 @@ exports.logOutHandler = catchAsync( async (req, res, next)=>{
         httpOnly: true
     }
     if(process.env.NODE_ENV === "production") cookieOptions.secure = true;
-    res.cookie('jwt', '');
-    res.status(200).send({
-        status: 'success',
-        message: 'You are logout success'
-    })
+    try {
+        // remove token in database
+        const isRemovedSuccess = await User.removeToken(req.user, req.cookies.jwt);
+        if(isRemovedSuccess){
+            res.cookie('jwt', '');
+            res.status(200).send({
+                status: 'success',
+                message: 'You are logout success'
+            })
+        }else{
+            next(new AppError(400, 'Could not remove token in db'))
+        }
+
+    }catch(e){
+        next(new AppError(500, 'Could not logout at this time'))
+    }
+    
 })
 exports.signUpHandler = catchAsync( async (req, res, next)=>{
     const { username, email, password, passwordConfirm } = req.body;

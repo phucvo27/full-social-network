@@ -12,13 +12,15 @@ postRouter.use('/:postID/likes', likeRouter);
 
 postRouter
     .route('/')
-    .get(postControllers.getAllPost)
     .post(upload.single('file'), postControllers.resizeImageInPost ,postControllers.createPost)
 
+postRouter.get('/:uid/all', postControllers.getAllPost)
 postRouter
     .route('/:postID')
     .get(postControllers.getPost)
     .put(postControllers.updatePost)
     .delete(postControllers.deletePost)
+
+
 
 module.exports = { postRouter }

@@ -22,3 +22,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.root, .header {
+  transition: all .5s;
+}
+
+.makeBlur{
+  filter: blur(2rem);
+  transition: all .5s;
+}

@@ -29,8 +29,8 @@ exports.getAllMessage = catchAsync( async(req, res, next)=>{
 exports.createMessage = catchAsync( async (req, res, next)=>{
     const sentTo = `${req.params.friendID}`;
     const sentBy = `${req.user}`;
-    const { message } = req.body;
-    if(message) {
+    const { content } = req.body;
+    if(content) {
         if(ObjectId.isValid(sentTo) && ObjectId.isValid(sentBy)){
             let roomChat = null;
     
@@ -42,9 +42,11 @@ exports.createMessage = catchAsync( async (req, res, next)=>{
             const message = new Message({
                 sentBy,
                 sentTo,
-                roomChat
+                roomChat,
+                message: content
             });
             const newMessage = await message.save();
+            
             res.status(200).send({
                 status: 'success',
                 data: newMessage

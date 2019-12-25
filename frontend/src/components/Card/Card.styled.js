@@ -21,6 +21,7 @@ export const CardTitle = styled.div`
         width: 1.6rem;
         fill: grey;
         cursor: pointer;
+        margin-right: 2rem;
     }
     
 `
@@ -109,6 +110,13 @@ export const FriendAvatar = styled.img`
     border: .1rem solid #fff;
 
 `
+
+export const ListComments = styled.div`
+
+    width: 100%;
+
+`
+
 export const FormComment = styled.div`
 
     margin: 0rem 0rem 2.5rem;
@@ -150,6 +158,11 @@ export const FormInput = styled.form`
         color: #fff;
         cursor: pointer;
         font-size: 1.2rem;
+        transition: all .2s;
+        &.edit {
+            background-color: orange;
+            transition: all .2s;
+        }
     }
 
 `

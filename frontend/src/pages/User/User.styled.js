@@ -100,6 +100,18 @@ export const UserProfileSection = styled.section`
     background-color: #fff;
     padding: 3.5rem 0;
     font-size: 1.6rem;
+
+    p {
+        transition: color .5s;
+        cursor: pointer;
+    }
+    p:hover {
+        color: #ff5e3a;
+        transition: color .5s;
+    }
+    p.active {
+        color: #ff5e3a;
+    }
 `
 export const Content = styled.section`
     padding: .5rem 2rem;

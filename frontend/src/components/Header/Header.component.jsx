@@ -33,9 +33,9 @@ class Header extends React.Component{
             uid = this.props.user.currentUser.uid;
         }
         console.log(this.props)
-        
+        console.log(this.props.location.pathname === '/chat')
         return (
-            <HeaderWrapper>
+            <HeaderWrapper className='header'>
                 <HeaderTitle onClick={()=>{this.props.history.push(`/`)}}>Facebook Clone</HeaderTitle>
                 {
                     this.props.user.currentUser !== null 
@@ -49,15 +49,18 @@ class Header extends React.Component{
                             />
                         </HeaderForm>
                         <HeaderInteract>
-                            <HeaderItem>
-                                <Message fill='#fff' className='icon'/>
-                                <p className='notification'>2</p>
-                                <Dropdown>
-                                    <DropdownTitle>
-                                        <h4>Messages</h4>
-                                    </DropdownTitle>
-                                </Dropdown>
-                            </HeaderItem>
+                            {
+                                this.props.location.pathname !== '/chat' && 
+                                <HeaderItem onClick={()=>{this.props.history.push(`/chat`)}}>
+                                    <Message fill='#fff' className='icon'/>
+                                    <p className='notification'>2</p>
+                                    <Dropdown>
+                                        <DropdownTitle>
+                                            <h4>Messages</h4>
+                                        </DropdownTitle>
+                                    </Dropdown>
+                                </HeaderItem>
+                            }
                             <HeaderItem>
                                 <Notification fill='#fff' className='icon'/>
                                 <p className='notification'>2</p>

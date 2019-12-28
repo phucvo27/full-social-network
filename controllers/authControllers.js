@@ -50,7 +50,7 @@ exports.logOutHandler = catchAsync( async (req, res, next)=>{
     if(process.env.NODE_ENV === "production") cookieOptions.secure = true;
     try {
         // remove token in database
-        const isRemovedSuccess = await User.removeToken(req.user, req.cookies.jwt);
+        const isRemovedSuccess = await User.removeToken(req.user._id, req.cookies.jwt);
         if(isRemovedSuccess){
             res.cookie('jwt', '');
             res.status(200).send({

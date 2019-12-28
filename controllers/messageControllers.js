@@ -5,7 +5,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 exports.getAllMessage = catchAsync( async(req, res, next)=>{
     const sentTo = `${req.params.friendID}`;
-    const sentBy = `${req.user}`;
+    const sentBy = `${req.user._id}`;
     
     if(ObjectId.isValid(sentTo) && ObjectId.isValid(sentBy)){
         let roomChat = null;
@@ -28,7 +28,7 @@ exports.getAllMessage = catchAsync( async(req, res, next)=>{
 
 exports.createMessage = catchAsync( async (req, res, next)=>{
     const sentTo = `${req.params.friendID}`;
-    const sentBy = `${req.user}`;
+    const sentBy = `${req.user._id}`;
     const { content } = req.body;
     if(content) {
         if(ObjectId.isValid(sentTo) && ObjectId.isValid(sentBy)){

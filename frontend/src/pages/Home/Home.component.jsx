@@ -6,10 +6,14 @@ import Card from '../../components/Card/Card.component';
 import image from '../../assets/test-image.jpg';
 import StatusForm from '../../components/StatusForm/Status-Form.component';
 import getSocket from '../../utils/getSocketConnection';
+import { connect } from 'react-redux';
+
 class HomePage extends React.Component{
     
     async componentDidMount(){
-        const socket = getSocket('phuc', '12345admin');
+        console.log('in didMount HomePage')
+        const { uid } = this.props.user.currentUser;
+        const socket = getSocket(uid);
         socket.on('connect', ()=>{
             console.log(socket.id)
         });
@@ -17,8 +21,13 @@ class HomePage extends React.Component{
             console.log('new emit message')
             console.log(data)
         })
+        socket.on('notification', (data)=>{
+            console.log('this is notification');
+            console.log(data)
+        })
     }
     render(){
+        console.log('in render homepage')
         return (
             <Grid className='home-page root'>
                 <LeftContent>
@@ -72,4 +81,11 @@ class HomePage extends React.Component{
     
 }
 
-export default HomePage;
+
+const mapStateToProps = state => {
+    console.log('in mapstate homepage')
+    return {
+        user: state.user
+    }
+}
+export default connect(mapStateToProps)(HomePage);

@@ -1,17 +1,18 @@
 import io from 'socket.io-client';
+import { BASE_URL } from './Api';
+
 
 function memoizeSocket(){
     let socket = null;
 
-    return function(username, password){
+    return function(uid){
         if(socket){
             console.log('get old socket')
             return socket;
         }else{
-            socket = io.connect('http://localhost:5000', {
+            socket = io.connect(`${BASE_URL}`, {
                 query:{
-                    username,
-                    password
+                    uid
                 }
             });
             return socket

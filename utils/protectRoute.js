@@ -14,7 +14,7 @@ exports.protectRoute = async (req, res, next)=>{
                 const isValid = user.isTokenStillValid(token);
                 if(isValid){
                     
-                    req.user = tokenData.uid;
+                    req.user = user.toObject();
                     next();
                 }else{
                     next(new AppError(400, 'Invalid Token'))

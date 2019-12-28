@@ -11,9 +11,13 @@ const PORT = process.env.PORT || 5000;
 
 const io = getIO(httpServer);
 
+const { saveSocketID } = require('./utils/redis-socket');
+
 io.on("connection", (socket)=>{
     console.log("new connection");
-
+    const { uid } = socket.handshake.query
+    saveSocketID(uid, socket.id);
+    console.log(uid)
     socket.on('push-login', (data)=>{
         console.log(data);
         socket.emit('login-succes', {

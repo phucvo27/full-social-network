@@ -52,7 +52,7 @@ exports.resizeImageInPost = catchAsync(async(req, res, next)=>{
     if(!req.file){
         return next();
     }
-    req.file.filename = `post-${req.user}-${Date.now()}`;
+    req.file.filename = `post-${req.user._id}-${Date.now()}`;
     req.filePath = `public/img/posts/${req.file.filename}.jpeg`
     await sharp(req.file.buffer)
             .resize(800 ,600)
@@ -68,7 +68,7 @@ exports.createPost = catchAsync(async (req, res, next)=>{
         const post = new Post({
             content,
             withImage,
-            owner: req.user
+            owner: req.user._id
         });
         const newPost = await post.save();
     
@@ -81,7 +81,7 @@ exports.createPost = catchAsync(async (req, res, next)=>{
             content,
             withImage,
             image: req.filePath,
-            owner: req.user
+            owner: req.user._id
         })
         const newPost = await post.save();
     

@@ -16,7 +16,9 @@ import {
     MessageAvatar,
     MessageContent,
     ButtonSend
-} from './Chat.styled'
+} from './Chat.styled';
+
+import getSocketConnection from '../../utils/getSocketConnection'
 
 import { BASE_URL } from '../../utils/Api';
 class ChatPage extends React.Component {
@@ -31,7 +33,7 @@ class ChatPage extends React.Component {
 
     componentDidMount(){
         try{
-            const socket = getSocketConnection(username, password);
+            const socket = getSocketConnection();
             socket.on('connect', ()=>{
                 if(socket.connected){
                     //console.log('connect success');
@@ -207,7 +209,7 @@ class ChatPage extends React.Component {
                             </MessageBox>
                         </ChatBody>
                         <ChatForm>
-                            <input placeholder='Enter your message here..' type='text' name='message' onChange={} />
+                            <input placeholder='Enter your message here..' type='text' name='message' onChange={this.handleChangeMessage} />
                             <ButtonSend>
                                 <Send />
                             </ButtonSend>

@@ -20,7 +20,7 @@ exports.getAllComment = catchAsync( async (req, res, next)=>{
 
 exports.createComment = catchAsync(async (req, res, next)=>{
     const postID = req.params.postID;
-    const owner = req.user;
+    const owner = req.user._id;
     const { content } = req.body;
     if(content){
         if(ObjectId.isValid(postID)){

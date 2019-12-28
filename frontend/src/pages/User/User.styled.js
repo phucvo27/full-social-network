@@ -35,6 +35,24 @@ export const HeaderThumb = styled.div`
         border-radius: .5rem .5rem 0rem 0rem;
     }
 `
+export const AddFriendButton = styled.button`
+
+    position: absoute;
+    right: 0;
+    bottom: -2rem;
+
+    display: inline-block;
+    padding: 1rem 3rem;
+    border: none;
+    border-radius: .5rem;
+
+    font-size: 1.4rem;
+    background-color: #fff;
+    color: #333;
+    text-transform: uppercase
+
+`
+
 export const Author = styled.div`
     position: absolute;
     left: 0;

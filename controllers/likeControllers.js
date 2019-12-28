@@ -6,7 +6,7 @@ const { catchAsync } = require('../utils/CatchAsync');
 
 exports.createLike = catchAsync(async (req, res, next)=>{
     const postID = req.params.postID;
-    const owner = req.user;
+    const owner = req.user._id;
 
     if(ObjectId.isValid(postID)){
         const post = await Post.findById(postID);
@@ -38,7 +38,7 @@ exports.createLike = catchAsync(async (req, res, next)=>{
 
 exports.dislike = catchAsync(async(req, res, next)=>{
     const postID = req.params.postID;
-    const owner = req.user;
+    const owner = req.user._id;
 
     if(ObjectId.isValid(postID)){
         const post = await Post.findById(postID);

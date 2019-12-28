@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { UserWrapper, UserHeader, HeaderThumb, Author, AuthorAvatar, AuthorName, UserProfileSection } from './User.styled';
-
+import { UserWrapper, UserHeader, HeaderThumb, AddFriendButton, Author, AuthorAvatar, AuthorName, UserProfileSection } from './User.styled';
+import { connect } from 'react-redux';
 import Timeline from './User-Timeline.component';
 import PhotoMasonry from '../../components/PhotoMansory/Masory.component'
-import imageHeader from '../../assets/top-header.jpg'
+import imageHeader from '../../assets/top-header.jpg';
+
+
 class UserPage extends Component{
 
     constructor(props){
@@ -27,6 +29,22 @@ class UserPage extends Component{
         const currentSection = e.target.innerHTML.toLowerCase();
         this.setState(()=>({currentSection}))
     }
+
+    handleSendRequestAddFriend = async ()=>{
+        const { match } = this.props.match;
+        const friendID = match.params.uid;
+
+        try {
+            const res = await fetch(`http://localhost:5000/api/users/request/${friendID}`);
+            if(res.status === 200){
+
+            }else{
+                
+            }
+        }catch(e){
+            console.log('something went wrong')
+        }
+    }
     
     render(){
         return (
@@ -34,6 +52,7 @@ class UserPage extends Component{
                 <UserHeader>
                     <HeaderThumb>
                         <img src={imageHeader} alt='thumbnail' />
+                        <AddFriendButton>Add Friend</AddFriendButton>
                         <Author>
                             <AuthorAvatar>
                                 <img src='https://html.crumina.net/html-olympus/img/author-main1.jpg' alt='user-avatar' />
@@ -57,4 +76,10 @@ class UserPage extends Component{
         )
     }
 }
-export default UserPage;
+
+const mapStateToProps = state => {
+    return {
+        user: state.user
+    }
+}
+export default connect(mapStateToProps)(UserPage);

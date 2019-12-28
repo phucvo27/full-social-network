@@ -123,6 +123,45 @@ userSchema.methods.isTokenStillValid = async function(token){
     }
 }
 
+userSchema.methods.addFriendRequest = async function(user){
+    try{
+        const { _id, username, avatar } = user;
+        const friend = {uid: _id, username, avatar };
+
+        this.friendRequests = [friend, ...this.friendRequests];
+        await this.save();
+        return friend;
+    }catch(e){
+        return false;
+    }
+    
+}
+
+userSchema.methods.acceptAndDenyFriend = async function(newFriend, type = null){
+
+    if(!type){
+        // accept friend request
+        this.friends = [...this.friends, newFriend._id];
+        // remove request 
+        this.friendRequests = this.friendRequests.filter( friend => friend.uid !== newFriend._id);
+    }else{
+        this.friendRequests = this.friendRequests.filter( friend => friend.uid !== newFriend._id);
+    }
+    try{
+        await this.save();
+        return {
+            uid: newFriend._id,
+            username: newFriend.username,
+            avatar: newFriend.avatar
+        };
+    }catch(e){
+        console.log('Error saving user === acceptAndDenyFriend')
+        return false;
+    }
+    
+
+}
+
 userSchema.statics.verifyAccount = async function(email, password){
     const User = this;
 

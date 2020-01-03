@@ -15,7 +15,7 @@ import {
     DropdownContent } from './Header.styled';
 import { connect } from 'react-redux';
 import defaultAvatar from '../../assets/user-1.jpg';
-import { userLogOutStart } from '../../redux/user/user.actions';
+import { userLogOutStart } from '../../redux/auth/auth.actions';
 import { withRouter } from 'react-router-dom';
 
 class Header extends React.Component{
@@ -97,7 +97,7 @@ class Header extends React.Component{
 
 const mapStateToProps = state =>{
     return {
-        user: state.user
+        user: state.auth
     }
 }
 

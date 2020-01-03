@@ -1,38 +1,36 @@
-import { USER_LOGIN_START, USER_LOGOUT_SUCCESS, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, SET_CURRENT_USER, USER_LOGOUT_START } from './user.types'
+import {
+    GET_BASIC_USER_INFOR_SUCCESS,
+    GET_BASIC_USER_INFOR_START,
+    GET_POST_OF_USER_START,
+    GET_POST_OF_USER_SUCCESS
+} from './user.types'
 
-
-export const setCurrentUser = ( payload )=>{
+export const getBasicUserInforStart = uid => {
     return {
-        type: SET_CURRENT_USER,
-        payload
-    }
-}
-export const userLoginStart = ( payload )=>{
-    return {
-        type: USER_LOGIN_START,
-        payload
+        type: GET_BASIC_USER_INFOR_START,
+        uid
     }
 }
 
-export const userLoginSuccess = ( payload )=>{
+export const getBasicUserInforSuccess = (uid, payload) =>{
     return {
-        type: USER_LOGIN_SUCCESS,
+        type: GET_BASIC_USER_INFOR_SUCCESS,
+        uid,
         payload
     }
 }
-export const userLoginFail = ( payload )=>{
+
+export const getPostOfUserStart = uid => {
     return {
-        type: USER_LOGIN_FAIL,
+        type: GET_POST_OF_USER_START,
+        uid
+    }
+}
+
+export const getPostOfUserSuccess = (uid, payload)=>{
+    return {
+        type: GET_POST_OF_USER_SUCCESS,
+        uid,
         payload
-    }
-}
-export const userLogOutStart = ()=>{
-    return {
-        type: USER_LOGOUT_START
-    }
-}
-export const userLogOutSuccess = ()=>{
-    return {
-        type: USER_LOGOUT_SUCCESS
     }
 }

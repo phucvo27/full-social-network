@@ -37,19 +37,23 @@ export const HeaderThumb = styled.div`
 `
 export const AddFriendButton = styled.button`
 
-    position: absoute;
-    right: 0;
-    bottom: -2rem;
-
+    position: absolute;
+    right: 2rem;
+    bottom: 1rem;
     display: inline-block;
     padding: 1rem 3rem;
     border: none;
     border-radius: .5rem;
-
     font-size: 1.4rem;
     background-color: #fff;
     color: #333;
-    text-transform: uppercase
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform .2s;
+    :hover {
+        transform: translateY(-1rem);
+        box-shadow: 0 1rem 4rem rgba(0,0,0,.1);
+    }
 
 `
 
@@ -178,4 +182,14 @@ export const Row = styled.div`
         font-size: 1.2rem;
         font-weight: normal;
     }
+`
+
+export const Empty = styled.div`
+    height: 10rem;
+    background-color: #fff;
+    border-radius: .5rem;
+    font-size: 1.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `

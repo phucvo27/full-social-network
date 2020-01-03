@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect} from 'react-redux';
-import {Title, LastestPhoto, Content, Profile, Row } from './User.styled';
+import {Title, LastestPhoto, Content, Profile, Row, Empty } from './User.styled';
 import { Grid, LeftContent, CenterContent, RightContent } from '../../components/GridWrapper/GridWrapper.styled'
 import Card from '../../components/Card/Card.component';
 import image from '../../assets/test-image.jpg';
@@ -9,13 +9,10 @@ import { getAllPost } from '../../redux/post/post.actions';
 
 class Timeline extends React.Component {
 
-    constructor(props){
-        super(props)
-    }
-
     componentDidMount(){
         const { getAllPosts } = this.props;
         const { match } = this.props.match;
+        console.log('this is componentDidMout of Timeline')
         console.log(match);
         console.log(this.props)
         getAllPosts(match.params.uid)
@@ -28,7 +25,7 @@ class Timeline extends React.Component {
         
         if(allPosts.length > 0){
             const userPosts = this.props.posts[match.params.uid]; 
-            if(userPosts.length > 0){
+            if(userPosts){
                 return userPosts.map(post => {
                     if(post.image !== null){
                         const image = post.image.replace("public",'http://localhost:5000')
@@ -38,10 +35,10 @@ class Timeline extends React.Component {
                     }
                 })
             }else{
-                return <p>No Post</p>
+                return <Empty> <p>No Post</p> </Empty>
             }
         }else{
-            return <p>Loading...</p>
+            return <Empty> <p>No Post</p> </Empty>
         }
     }
     render(){

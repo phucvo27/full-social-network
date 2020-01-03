@@ -21,11 +21,7 @@ export const postReducer = (state = INIT_STATE, action)=>{
                 ...state,
                 [action.uid]:action.payload
             }
-        case GET_ALL_POST_FAIL:
-            return {
-                ...state,
-                posts: []
-            }
+        
         default:
             return state;
     }

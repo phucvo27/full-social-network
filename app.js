@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { authRouter } = require('./routes/authRoutes');
-const { postRouter } = require('./routes/postRoutes')
+const { postRouter } = require('./routes/postRoutes');
+const { userRouter } = require('./routes/userRoutes');
+
 const { messageRouter } = require('./routes/messageRoutes');
 const cors = require('cors');
 
@@ -50,6 +52,7 @@ app.use((req, res, next)=>{
 })
 
 app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/messages', messageRouter);
 

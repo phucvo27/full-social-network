@@ -2,7 +2,7 @@ import React , { Component } from 'react';
 import { Wrapper, FormWrapper, Form, FormAvatar } from './Login.styled';
 import InputField from '../../components/InputField/Input.component';
 import avatar from '../../avatar.jpg';
-import { userLoginStart } from '../../redux/user/user.actions';
+import { userLoginStart } from '../../redux/auth/auth.actions';
 import { connect } from 'react-redux';
 
 class LoginPage extends Component {

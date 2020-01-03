@@ -24,9 +24,10 @@ class StatusForm extends React.Component{
         formData.append('content', this.state.content)
         if(!file.files[0]){
             withImage = false;
-            formData.append('withImage', 'false')
+            formData.append('withImage', withImage)
         }else{
-            formData.append('withImage', 'true');
+            withImage = true
+            formData.append('withImage', withImage);
             formData.append('file', file.files[0])
         }
         this.props.createPost(formData)

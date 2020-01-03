@@ -4,6 +4,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const { catchAsync } = require('../utils/CatchAsync');
 const { AppError } = require('../utils/AppError');
 
+const { sendNotifications } = require('../utils/redis-socket');
 exports.getAllComment = catchAsync( async (req, res, next)=>{
 
     const postID = req.params.postID;
@@ -34,6 +35,13 @@ exports.createComment = catchAsync(async (req, res, next)=>{
                         content
                     })
                     const newComment = await comment.save();
+
+                    // send notification for the post's owner , tell him, his post is commented
+                    const dataSocket = {
+                        type: 'comment',
+                        owner: req.user
+                    }
+                    sendNotifications('notification', `${post.owner}`, dataSocket);
                     res.status(200).send({
                         status: 'success',
                         data: newComment

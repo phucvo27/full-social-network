@@ -85,7 +85,7 @@ class HomePage extends React.Component{
 const mapStateToProps = state => {
     console.log('in mapstate homepage')
     return {
-        user: state.user
+        user: state.auth
     }
 }
 export default connect(mapStateToProps)(HomePage);

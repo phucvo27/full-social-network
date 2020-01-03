@@ -3,6 +3,7 @@ const { Like } = require('../models/Like');
 const ObjectId = require('mongoose').Types.ObjectId;
 const { AppError } = require('../utils/AppError');
 const { catchAsync } = require('../utils/CatchAsync');
+const { sendNotifications } = require('../utils/redis-socket');
 
 exports.createLike = catchAsync(async (req, res, next)=>{
     const postID = req.params.postID;
@@ -17,6 +18,12 @@ exports.createLike = catchAsync(async (req, res, next)=>{
             });
             try{
                 await like.save();
+                // send notification for the post's owner , tell him, his post is liked
+                const dataSocket = {
+                    type: 'liked',
+                    owner: req.user
+                }
+                sendNotifications('notification', `${post.owner}`, dataSocket);
                 res.status(200).send({
                     status: 'success',
                     message: 'you are liked that post'
@@ -47,6 +54,12 @@ exports.dislike = catchAsync(async(req, res, next)=>{
                 postID,
                 owner
             })
+            // send notification for the post's owner , tell him, his post is disliked
+            // const dataSocket = {
+            //     type: 'dislike',
+            //     owner: req.user
+            // }
+            // sendNotifications('liked', `${post.owner}`, dataSocket);
             res.status(200).send({
                 status: 'success',
                 message: 'you are disliked that post'

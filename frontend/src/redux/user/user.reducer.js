@@ -1,37 +1,27 @@
 import {
-    SET_CURRENT_USER,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-    USER_LOGOUT_SUCCESS,
- } from './user.types';
+    GET_BASIC_USER_INFOR_SUCCESS,
+    GET_POST_OF_USER_SUCCESS
+} from './user.types'
+/*
+    {
+        uid: {uid , username, avatar, posts: []}
+    }
+*/
 
-const INIT_STATE = {
-    currentUser: null,
-    error: null
-}
-
-export const userReducer = (state = INIT_STATE, action) => {
-    switch(action.type){
-        case SET_CURRENT_USER:
+export const userReducer = (state = {}, action) => {
+    switch(action.type) {
+        case GET_BASIC_USER_INFOR_SUCCESS: 
             return {
                 ...state,
-                currentUser: action.payload
+                [action.uid] : action.payload
             }
-        case USER_LOGIN_SUCCESS:
+        case GET_POST_OF_USER_SUCCESS:
             return {
                 ...state,
-                currentUser: action.payload,
-                error: null
-            };
-        case USER_LOGIN_FAIL: 
-            return {
-                ...state,
-                currentUser: null
-            }
-        case USER_LOGOUT_SUCCESS: 
-            return {
-                ...state,
-                currentUser: null
+                [action.uid]: {
+                    ...state[action.uid],
+                    posts: [action.payload, ...state[action.uid].posts]
+                }
             }
         default:
             return state;

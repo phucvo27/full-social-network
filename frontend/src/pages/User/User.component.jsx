@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Timeline from './User-Timeline.component';
 import PhotoMasonry from '../../components/PhotoMansory/Masory.component'
 import imageHeader from '../../assets/top-header.jpg';
-
+import { getBasicUserInforStart } from '../../redux/user/user.actions';
 
 class UserPage extends Component{
 
@@ -16,7 +16,14 @@ class UserPage extends Component{
         }
     }
 
+    componentDidMount(){
+        const { match } = this.props.match;
+        this.props.getInforOfUser(match.params.uid)
+        console.log('this is componentDidMout of userPage')
+    }
+
     renderSection = ()=>{
+        console.log('im in render section')
         const { currentSection } = this.state;
         if(currentSection === 'timelines'){
             return <Timeline match={this.props.match} />
@@ -47,6 +54,7 @@ class UserPage extends Component{
     }
     
     render(){
+        const { match } = this.props.match;
         return (
             <UserWrapper>
                 <UserHeader>
@@ -58,7 +66,7 @@ class UserPage extends Component{
                                 <img src='https://html.crumina.net/html-olympus/img/author-main1.jpg' alt='user-avatar' />
                             </AuthorAvatar>
                             <AuthorName>
-                                <h1>Phuc Vo</h1>
+                                <h1>{this.props.user[match.params.uid] ? this.props.user[match.params.uid].username : 'Loading..'}</h1>
                                 <p>Full Stack Developer</p>
                             </AuthorName>
                         </Author>
@@ -82,4 +90,9 @@ const mapStateToProps = state => {
         user: state.user
     }
 }
-export default connect(mapStateToProps)(UserPage);
+const mapDispatchToProps = dispatch => {
+    return {
+        getInforOfUser: uid => dispatch(getBasicUserInforStart(uid))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(UserPage);

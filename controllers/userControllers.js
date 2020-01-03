@@ -10,16 +10,20 @@ exports.friendRequest = catchAsync( async (req, res, next)=>{
     const { friendID } = req.params;
     console.log('in route add friend')
     if(ObjectId.isValid(friendID)){
-        const user = await User.findById(friendID);
-        if(user){
-            const friend = await user.addFriendRequest(req.user);
-            if(friend){
+        const userIsRequired = await User.findById(friendID);
+        if(userIsRequired){
+            const isSuccess = await user.addFriendRequest(req.user, userIsRequired);
+            if(isSuccess){
                 const body = {
                     type: 'friend-request',
-                    ...friend
+                    owner: {
+                        uid: req.user._id,
+                        username: req.user.username,
+                        avatar: req.user.avatar
+                    }
                 }
 
-                sendNotifications('notification', friend.uid, body);
+                sendNotifications('notification', `${userIsRequired._id}`, body);
                 res.status(200).send({
                     status: 'success'
                 })
@@ -36,17 +40,18 @@ exports.friendRequest = catchAsync( async (req, res, next)=>{
 
 exports.acceptFriendRequest = catchAsync( async (req, res, next)=>{
     const { friendID } = req.params;
+
     if(ObjectId.isValid(friendID)){
         const friend = await User.findById(friendID);
-        if(user){
+        if(friend){
             const newFriend = await req.user.acceptAndDenyFriend(friend);
             if(newFriend){
                 const body = {
                     type: 'accept-request',
-                    ...newFriend
+                    owner: newFriend
                 }
 
-                sendNotifications('notification', newFriend.uid, body);
+                sendNotifications('notification', newFriend.uid, body); // send notification for that user , let him know his request is accepted
                 res.status(200).send({
                     status: 'success'
                 })
@@ -82,3 +87,23 @@ exports.denyFriendRequest = catchAsync( async (req, res, next)=>{
     }
 })
 
+exports.getUserInfor = catchAsync( async(req, res, next)=>{
+    const { id } = req.params;
+    if(ObjectId.isValid(id)){
+        const user = await User.findById(id);
+        res.status(200).send({
+            status: 'success',
+            data: user
+        })
+    }else{
+        next( new AppError(500, 'Your id is invalid'))
+    }
+
+})
+
+exports.getCurrentUser = catchAsync( async(req, res, next)=>{
+    res.status(200).send({
+        status: 'success',
+        data: req.user
+    })
+})

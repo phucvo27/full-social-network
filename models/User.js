@@ -51,6 +51,11 @@ const userSchema = new mongoose.Schema({
             uid: mongoose.Schema.Types.ObjectId
         }
     ],
+    sentRequestTo: [
+        {
+            type: mongoose.Schema.Types.ObjectId
+        }
+    ],
     tokens: {
         type: [String],
         default: []
@@ -123,14 +128,23 @@ userSchema.methods.isTokenStillValid = async function(token){
     }
 }
 
-userSchema.methods.addFriendRequest = async function(user){
+userSchema.methods.addFriendRequest = async function(user, userIsRequired){
+    /*
+        idea : 
+            -   Add id of current user ( user ) to list friend request of that friend ( userIsRequired )
+            -   Add id of friend ( userIsRequired ) to list friend that is sent the request of current user
+    */
     try{
         const { _id, username, avatar } = user;
         const friend = {uid: _id, username, avatar };
 
-        this.friendRequests = [friend, ...this.friendRequests];
+        // add user id to friend request list of friend 
+        userIsRequired.friendRequests = [friend, ...this.friendRequests];
+        // Add if of friend to sentRequestTo of user
+        this.sentRequestTo = [userIsRequired._id, ...this.sentRequestTo];
         await this.save();
-        return friend;
+        await userIsRequired.save();
+        return true;
     }catch(e){
         return false;
     }
@@ -139,16 +153,25 @@ userSchema.methods.addFriendRequest = async function(user){
 
 userSchema.methods.acceptAndDenyFriend = async function(newFriend, type = null){
 
+    /*
+        idea: 
+            -   first : check user is exist
+            -   second : 
+                -   click accept -> add that user to list friend of that current user , and then remove that user out from friend requests 
+                -   after that remove currentUser out from the list sentRequestTo of friend 
+    */
     if(!type){
         // accept friend request
         this.friends = [...this.friends, newFriend._id];
         // remove request 
         this.friendRequests = this.friendRequests.filter( friend => friend.uid !== newFriend._id);
+        newFriend.sentRequestTo = newFriend.sentRequestTo.filter( user => user.toString() !== this._id.toString()); // because at this time is ObjectId
     }else{
         this.friendRequests = this.friendRequests.filter( friend => friend.uid !== newFriend._id);
     }
     try{
         await this.save();
+        await newFriend.save();
         return {
             uid: newFriend._id,
             username: newFriend.username,

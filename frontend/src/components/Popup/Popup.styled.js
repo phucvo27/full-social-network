@@ -32,13 +32,14 @@ export const Popup = styled.div`
 export const Content = styled.div`
 
     height: 400px;
-    width: 400px;
-    background-color: red;
+    width: 50%;
+    background-color: #fff;
     border-radius: .5rem;
     transform: scale(0);
     transition: all .5s;
-
+    padding: 2rem;
     position: relative;
+    box-shadow: .1rem .4rem .6rem rgba(0,0,0,.3);
 
 `
 
@@ -46,7 +47,7 @@ export const Close = styled.span`
     position: absolute;
     top: 1rem;
     right: 1rem;
-    color: #fff;
+    color: #333;
     font-size: 1.6rem;
     cursor: pointer;
 `

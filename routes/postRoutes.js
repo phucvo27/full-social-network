@@ -18,7 +18,7 @@ postRouter.get('/:uid/all', postControllers.getAllPost)
 postRouter
     .route('/:postID')
     .get(postControllers.getPost)
-    .put(postControllers.updatePost)
+    .put(upload.single('file'), postControllers.resizeImageInPost ,postControllers.updatePost)
     .delete(postControllers.deletePost)
 
 

@@ -1,5 +1,5 @@
 
-export const BASE_URL = 'http://localhost:5000'
+export const BASE_URL = 'http://localhost:5000/api'
 
 export const Api = async (url, method, isFile = null, data = null)=>{
     if(method === 'get'){

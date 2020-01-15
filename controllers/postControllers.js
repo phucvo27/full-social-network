@@ -14,12 +14,28 @@ exports.getAllPost = catchAsync(async (req, res, next)=>{
             },
             {
                 $lookup: {
+                    from: 'users',
+                    localField: 'owner',
+                    foreignField: '_id',
+                    as: 'ownerTemp'
+                }
+            },  
+            {
+                $addFields: {
+                    "owner.username": {$arrayElemAt: ["$ownerTemp.username", 0]},
+                    "owner.uid": {$arrayElemAt: ["$ownerTemp._id", 0]},
+                    "owner.avatar": {$arrayElemAt: ["$ownerTemp.avatar", 0]}
+                }
+            },
+            {
+                $lookup: {
                     from: 'likes',
                     localField: '_id',
                     foreignField: 'postID',
                     as: 'likes'
                 }
             },
+              
             {
                 $lookup: {
                     from: 'comments',
@@ -35,11 +51,15 @@ exports.getAllPost = catchAsync(async (req, res, next)=>{
                 }
             },
             {
+                $project: {
+                    ownerTemp: 0
+                }
+            },
+            {
                 $sort: {
                     created_at: -1
                 }
             }
-            
         ]
     );
     res.status(200).send({
@@ -99,6 +119,8 @@ exports.updatePost = catchAsync( async (req, res, next)=>{
     if(ObjectId.isValid(postID)){
         const post = await Post.findById(postID);
         if(post){
+            console.log(content);
+            console.log(withImage)
             if(content || withImage){
                 if(content){
                     post.content = content;
@@ -116,6 +138,7 @@ exports.updatePost = catchAsync( async (req, res, next)=>{
                 next(new AppError(400, 'Missing required field'))
             }
         }else{
+            console.log('post is not exist')
             next(new AppError(400, 'Your post doesnt exist'));
         }
     }else{

@@ -2,14 +2,14 @@ import React from 'react';
 import { StatusFormWrapper, StatusFormHeader, HeaderItem, StatusFormBody, StatusFormFooter } from './Status-Form.styled'
 import Button from '../Button/Button.component';
 import { ReactComponent as Camera } from '../../assets/SVG/Camera.svg';
-import { postCreateStart } from '../../redux/post/post.actions';
+import { postCreateStart, editPostStart } from '../../redux/post/post.actions';
 import { connect } from 'react-redux';
 class StatusForm extends React.Component{
 
     constructor(props){
         super(props);
         this.state = {
-            content: ''
+            content: props.content ? props.content : ''
         }
     }
     handleChange = e =>{
@@ -20,21 +20,26 @@ class StatusForm extends React.Component{
         e.preventDefault();
         const file = e.target.elements.file;
         const formData = new FormData();
-        let withImage;
         formData.append('content', this.state.content)
         if(!file.files[0]){
-            withImage = false;
-            formData.append('withImage', withImage)
+            formData.append('withImage', false)
         }else{
-            withImage = true
-            formData.append('withImage', withImage);
+            formData.append('withImage', true);
             formData.append('file', file.files[0])
         }
-        this.props.createPost(formData)
+        if(this.props.isEdit){
+            console.log(`Content is : ${this.state.content}`)
+            console.log(formData.entries().next().done)
+            this.props.editPost(this.props.postID, formData);
+        }else{
+            this.props.createPost(formData)
+        }
+        
         e.target.reset();
         this.setState(()=>({content: ''}))
     }
     render(){
+        console.log(this.props)
         return (
             <StatusFormWrapper>
                 <StatusFormHeader>
@@ -62,7 +67,7 @@ class StatusForm extends React.Component{
                             </label>
                         </div>
                     
-                        <Button type='submit' typeBtn='highlight'>Post Status</Button>
+                        <Button type='submit' typeBtn='highlight'>{this.props.isEdit ? 'Edit Status' : 'Post Status'}</Button>
                     </StatusFormFooter>
                 </form>
                 </StatusFormBody>
@@ -75,7 +80,8 @@ class StatusForm extends React.Component{
 
 const mapDispatchToProps = dispatch =>{
     return {
-        createPost: (payload)=> dispatch(postCreateStart(payload))
+        createPost: (payload)=> dispatch(postCreateStart(payload)),
+        editPost: (postID, payload) => dispatch(editPostStart(postID, payload))
     }
 }
 

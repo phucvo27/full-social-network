@@ -35,16 +35,26 @@ exports.createComment = catchAsync(async (req, res, next)=>{
                         content
                     })
                     const newComment = await comment.save();
-
-                    // send notification for the post's owner , tell him, his post is commented
-                    const dataSocket = {
-                        type: 'comment',
-                        owner: req.user
+                    const data = {
+                        _id: newComment._id,
+                        postID: newComment.postID,
+                        owner: {
+                            uid: req.user._id,
+                            username: req.user.username,
+                            avatar: req.user.avatar
+                        },
+                        content: newComment.content,
+                        created_at: newComment.created_at
                     }
-                    sendNotifications('notification', `${post.owner}`, dataSocket);
+                    // send notification for the post's owner , tell him, his post is commented
+                    // const dataSocket = {
+                    //     type: 'comment',
+                    //     owner: req.user
+                    // }
+                    // sendNotifications('notification', `${post.owner}`, dataSocket);
                     res.status(200).send({
                         status: 'success',
-                        data: newComment
+                        data
                     })
                     
                 }else{
@@ -74,9 +84,20 @@ exports.updateComment = catchAsync( async(req, res, next)=>{
                     if(comment){
                         comment.content = content;
                         const newComment = await comment.save();
+                        const data = {
+                            _id: newComment._id,
+                            postID: newComment.postID,
+                            owner: {
+                                uid: req.user._id,
+                                username: req.user.username,
+                                avatar: req.user.avatar
+                            },
+                            content: newComment.content,
+                            created_at: newComment.created_at
+                        }
                         res.status(200).send({
                             status: 'success',
-                            data: newComment
+                            data
                         })
                     }else{
                         next(new AppError(400, 'The comment doesnt exist'))

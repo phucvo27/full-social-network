@@ -3,43 +3,47 @@ import { connect} from 'react-redux';
 import {Title, LastestPhoto, Content, Profile, Row, Empty } from './User.styled';
 import { Grid, LeftContent, CenterContent, RightContent } from '../../components/GridWrapper/GridWrapper.styled'
 import Card from '../../components/Card/Card.component';
-import image from '../../assets/test-image.jpg';
-import { getAllPost } from '../../redux/post/post.actions';
+//import image from '../../assets/test-image.jpg';
 
-
+import Popup from '../../components/Popup/Popup.component';
 class Timeline extends React.Component {
 
-    componentDidMount(){
-        const { getAllPosts } = this.props;
-        const { match } = this.props.match;
-        console.log('this is componentDidMout of Timeline')
-        console.log(match);
-        console.log(this.props)
-        getAllPosts(match.params.uid)
+    constructor(props){
+        super(props);
+        this.state = {
+            postForEdit: null
+        }
     }
 
-    renderCard = ()=>{
-        console.log(this.props.posts);
-        const { match } = this.props.match;
-        const allPosts = Object.keys(this.props.posts);
+    handleShowPopUp = (post)=>{
+        this.setState(()=>({postForEdit: post}));
         
-        if(allPosts.length > 0){
+    }
+    handleHidePopUp = ()=>{
+        this.setState(()=>({postForEdit: null}));
+    }
+    renderCard = ()=>{
+        console.log('in render card')
+        const { match } = this.props.match;
+        // const allPosts = Object.keys(this.props.posts);
+        if(this.props.posts[match.params.uid]){
             const userPosts = this.props.posts[match.params.uid]; 
             if(userPosts){
                 return userPosts.map(post => {
                     if(post.image !== null){
                         const image = post.image.replace("public",'http://localhost:5000')
-                        return <Card key={post._id} listImage={[image]} content={post.content} postID={post._id} />
+                        return <Card key={post._id} listImage={[image]} post={post} postID={post._id} showPopUp={this.handleShowPopUp} />
                     }else{
-                        return <Card key={post._id} content={post.content} />
+                        return <Card key={post._id} post={post} showPopUp={this.handleShowPopUp}/>
                     }
                 })
             }else{
                 return <Empty> <p>No Post</p> </Empty>
             }
         }else{
-            return <Empty> <p>No Post</p> </Empty>
+            return <p>Loading...</p>
         }
+        
     }
     render(){
         return (
@@ -69,9 +73,7 @@ class Timeline extends React.Component {
                 </LeftContent>
                 <CenterContent>
                     {this.renderCard()}
-                    <Card listImage={['https://html.crumina.net/html-olympus/img/post-photo6.jpg']}/>
-                    <Card />
-                    <Card listImage={[image]} />
+                    
                 </CenterContent>
                 <RightContent>
                     <Content>
@@ -89,7 +91,7 @@ class Timeline extends React.Component {
                         </LastestPhoto>
                     </Content>
                 </RightContent>
-                
+                {this.state.postForEdit && <Popup post={this.state.postForEdit} hidePopUp={this.handleHidePopUp} />}
             </Grid>
         )
     }
@@ -100,10 +102,15 @@ const mapStateToProps = state => {
         posts: state.posts
     }
 }
-const mapDispatchToProps = dispatch => {
-    return {
-        getAllPosts: uid => dispatch(getAllPost(uid))
-    }
-}
+// const mapDispatchToProps = dispatch => {
+//     return {
+//         getAllPosts: uid => dispatch(getAllPost(uid))
+//     }
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Timeline);
+export default connect(mapStateToProps)(Timeline);
+/*
+<Card listImage={['https://html.crumina.net/html-olympus/img/post-photo6.jpg']}/>
+<Card />
+<Card listImage={[image]} />
+*/

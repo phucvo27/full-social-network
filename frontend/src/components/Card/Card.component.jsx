@@ -41,10 +41,8 @@ class Card extends React.Component {
     handleEditPost = ()=>{
         // const rootElement = document.querySelector('.root');
         // const headerElement = document.querySelector('.header');
-        const popup = document.querySelector('#popup');
-        // rootElement.classList.add('makeBlur');
-        // headerElement.classList.add('makeBlur');
-        popup.classList.add('active')
+        this.props.showPopUp(this.props.post)
+        
     }
 
     enableEditComment = ( currentContent )=>{
@@ -64,58 +62,72 @@ class Card extends React.Component {
         })
     }
     render(){
-        const { listImage = [], content} = this.props
+        const { listImage = [], isEditPost, post} = this.props;
+        console.log(this.props.post)
+        let content, avatar, username, uid, created_at;
+        if(post){
+            content = post.content;
+            username = post.owner.username;
+            uid = post.owner.uid;
+            avatar = post.owner.avatar;
+            created_at = new Date(post.created_at).toLocaleDateString()
+        }
         return (
             <CardWrapper>
                 <CardTitle>
-                    <CardAvatar src={userAvatar} alt='user-avatar' />
+                    <CardAvatar src={ avatar ? avatar : userAvatar} alt='user-avatar' />
                     <CardAuthor>
-                        <h1>Phuc Vo</h1>
-                        <p>19 hours ago</p>
+                        <h1>{username}</h1>
+                        <p>{created_at}</p>
                     </CardAuthor>
                     <Edit onClick={this.handleEditPost}/>
                     <Delete />
                 </CardTitle>
                 <CardBody>
-                    <p>{content}</p>
+                    <p>{ content && content}</p>
                     { listImage.length > 0 && listImage.map((image, idx) => {
                         return (<img key={idx} src={image} alt='post-content' />)
                     })}
                 </CardBody>
-                <CardFooter>
-                    <Heart />
-                    <p>8</p>
-                    <FriendListLiked>
-                        <FriendLiked>
-                            <FriendAvatar src={userAvatar2} alt='user-avatar' />
-                        </FriendLiked>
-                        <FriendLiked>
-                            <FriendAvatar src={userAvatar} alt='user-avatar' />
-                        </FriendLiked>
-                        <FriendLiked>
-                            <FriendAvatar src={userAvatar} alt='user-avatar' />
-                        </FriendLiked>
-                    </FriendListLiked>
-                    <Message />
-                    <p>17</p>
-                </CardFooter>
-                <ListComments>
-                    <Comment 
-                        enableEditComment={this.enableEditComment} 
-                        content='this is a pretty girl'/>
-                </ListComments>
-                <FormComment>
-                    <FormInput>
-                        <input 
-                            onChange={this.handleChange}
-                            type='text' 
-                            value={this.state.comment} 
-                            placeholder='Add comment here..'/>
-                        <button className={this.state.editComment ? 'edit' : ''}>
-                            { this.state.editComment ? 'Edit Comment' : 'Add Comment'}
-                        </button>
-                    </FormInput>
-                </FormComment>
+                {
+                    !isEditPost && 
+                        <React.Fragment>
+                            <CardFooter>
+                                <Heart />
+                                <p>8</p>
+                                <FriendListLiked>
+                                    <FriendLiked>
+                                        <FriendAvatar src={userAvatar2} alt='user-avatar' />
+                                    </FriendLiked>
+                                    <FriendLiked>
+                                        <FriendAvatar src={userAvatar} alt='user-avatar' />
+                                    </FriendLiked>
+                                    <FriendLiked>
+                                        <FriendAvatar src={userAvatar} alt='user-avatar' />
+                                    </FriendLiked>
+                                </FriendListLiked>
+                                <Message />
+                                <p>17</p>
+                            </CardFooter>
+                            <ListComments>
+                                <Comment 
+                                    enableEditComment={this.enableEditComment} 
+                                    content='this is a pretty girl'/>
+                            </ListComments>
+                            <FormComment>
+                                <FormInput>
+                                    <input 
+                                        onChange={this.handleChange}
+                                        type='text' 
+                                        value={this.state.comment} 
+                                        placeholder='Add comment here..'/>
+                                    <button className={this.state.editComment ? 'edit' : ''}>
+                                        { this.state.editComment ? 'Edit Comment' : 'Add Comment'}
+                                    </button>
+                                </FormInput>
+                            </FormComment>
+                        </React.Fragment>
+                }
             </CardWrapper>
         )
     }

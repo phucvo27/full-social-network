@@ -5,8 +5,10 @@ import {
     GET_ALL_POST_START,
     GET_ALL_POST_SUCCESS,
     GET_ALL_POST_FAIL,
-    ADD_COMMENT_TO_POST_START,
-    ADD_COMMENT_TO_POST_SUCCESS
+    EDIT_POST_START,
+    EDIT_POST_SUCCESS,
+    DELETE_POST_START,
+    DELETE_POST_SUCCESS
 } from './post.types';
 
 export const getAllPost = (uid) => {
@@ -51,17 +53,39 @@ export const postCreateFail = ()=>{
     }
 }
 
-// Comment
-export const addCommentToPostStart = (payload)=>{
+// Edit Post
+export const editPostStart = (postID, payload) => {
     return {
-        type: ADD_COMMENT_TO_POST_START,
+        type: EDIT_POST_START,
+        postID,
         payload
     }
 }
 
-export const addCommentToPostSuccess = (payload)=>{
+export const editPostSuccess = payload => {
     return {
-        type: ADD_COMMENT_TO_POST_SUCCESS,
+        type: EDIT_POST_SUCCESS,
+        uid: payload.owner.uid,
+        postID: payload._id,
         payload
     }
 }
+
+// Delete post
+export const deletePostStart = postID => {
+    return {
+        type: DELETE_POST_START,
+        postID
+    }
+}
+
+export const deletePostSuccess = payload => {
+    return {
+        type: DELETE_POST_SUCCESS,
+        postID: payload._id,
+        uid: payload.owner.uid
+    }
+}
+
+
+

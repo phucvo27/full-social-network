@@ -2,6 +2,7 @@ import React from 'react';
 import FormInput from '../InputField/Input.component'
 import { ReactComponent as Message} from '../../assets/SVG/Comment.svg';
 import { ReactComponent as Notification} from '../../assets/SVG/Notification-1.svg';
+import { ReactComponent as AddUser} from '../../assets/SVG/Add-User-2.svg';
 import { ReactComponent as LogOut} from '../../assets/SVG/LogOut.svg';
 import NotificationItem from '../NotificationItem/Notification-Item.component'
 import { 
@@ -74,6 +75,19 @@ class Header extends React.Component{
                                     </DropdownContent>
                                 </Dropdown>
                             </HeaderItem>
+                            <HeaderItem>
+                                <AddUser fill='#fff' className='icon'/>
+                                <p className='notification'>2</p>
+                                <Dropdown>
+                                    <DropdownTitle>
+                                        <h4>Friend Requests</h4>
+                                        <p>X</p>
+                                    </DropdownTitle>
+                                    <DropdownContent>
+                                        <NotificationItem avatar='https://html.crumina.net/html-olympus/img/author-main1.jpg' />
+                                    </DropdownContent>
+                                </Dropdown>
+                            </HeaderItem>
                             
                             <HeaderItem className='User' onClick={()=>{
                                 this.props.history.push(`/user/${uid}`)
@@ -84,6 +98,7 @@ class Header extends React.Component{
                             <HeaderItem onClick={this.handleSignOut}>
                                 <LogOut fill='#fff' className='icon'/>
                             </HeaderItem>
+                            
                         </HeaderInteract>
                     </React.Fragment>
                 }

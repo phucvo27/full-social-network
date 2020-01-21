@@ -13,10 +13,12 @@ class Comment extends React.Component {
         }
     }
     showEditForm = ()=>{
-        const { content, enableEditComment } = this.props
-        enableEditComment(content)
+        const { enableEditComment} = this.props
+        const { content, _id } = this.props.comment
+        enableEditComment(content, _id)
     }
     render(){
+        console.log(this.props.comment)
         return (
             <Wrapper>
                 <CommentBox>
@@ -29,17 +31,14 @@ class Comment extends React.Component {
                             <span className='time'>12 hours ago</span>
                         </CommentAuthor>
                         <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae sint id neque eum exercitationem ex optio dignissimos tempore blanditiis minima vitae odio, necessitatibus perspiciatis ut modi atque. Fugiat, voluptatem quos!
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae sint id neque eum exercitationem ex optio dignissimos tempore blanditiis minima vitae odio, necessitatibus perspiciatis ut modi atque. Fugiat, voluptatem quos!
-                          
-                          Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae sint id neque eum exercitationem ex optio dignissimos tempore blanditiis minima vitae odio, necessitatibus perspiciatis ut modi atque. Fugiat, voluptatem quos!
+                            {this.props.comment && this.props.comment.content}
                         </p>
                     </CommentContent>
                 </CommentBox>
                 <EditButton className='edit' onClick={this.showEditForm}>
                     <Edit />
                 </EditButton>
-                <DeleteButton>
+                <DeleteButton onClick={()=>{ this.props.deleteComment(this.props.comment)}}>
                     <Delete />
                 </DeleteButton>
                 <EditCommentWrapper className={this.state.showEditForm ? 'active' : ''}>

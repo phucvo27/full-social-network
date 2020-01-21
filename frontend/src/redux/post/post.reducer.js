@@ -12,7 +12,10 @@ export const postReducer = (state = INIT_STATE, action)=>{
         case POST_CREATE_SUCCESS:
             return {
                 ...state,
-                [action.uid]: [ action.payload ,...state.posts[action.uid]]
+                [action.uid]: {
+                    ...state[action.uid], 
+                    [action.payload._id]: action.payload
+                }
             }
         case GET_ALL_POST_SUCCESS:
             return {
@@ -22,12 +25,18 @@ export const postReducer = (state = INIT_STATE, action)=>{
         case EDIT_POST_SUCCESS:
             return {
                 ...state,
-                [action.uid]: state[action.uid].map(post => post._id === action.postID ? action.payload : post)
+                [action.uid]: {
+                    ...state[action.uid],
+                    [action.postID]: action.payload
+                }
             }
         case DELETE_POST_SUCCESS:
             return {
                 ...state,
-                [action.uid]: state[action.uid].filter(post => post._id !== action.postID)
+                [action.uid]: {
+                    ...state[action.uid],
+                    [action.postID]: null
+                }
             }
         
         default:

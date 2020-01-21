@@ -9,7 +9,7 @@ import {
 
 function* getBasicUserInfor({ uid }){
     try {
-        const res = yield fetch(`${BASE_URL}/api/users/${uid}`, {
+        const res = yield fetch(`${BASE_URL}/users/${uid}`, {
             headers: {
                 'Content-Type': 'application/json'
             },

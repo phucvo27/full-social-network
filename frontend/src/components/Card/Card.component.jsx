@@ -9,7 +9,8 @@ import { ReactComponent as Message } from '../../assets/SVG/Message.svg';
 import { ReactComponent as Edit } from '../../assets/SVG/Edit.svg';
 import { ReactComponent as Delete } from '../../assets/SVG/Delete.svg';
 import { connect } from 'react-redux';
-import { addCommentToPostStart } from '../../redux/post/post.actions'
+import { addCommentToPostStart, editCommentStart, removeCommentStart } from '../../redux/comment/comment.actions';
+import { deletePostStart } from '../../redux/post/post.actions';
 import userAvatar from '../../assets/user-1.jpg';
 import userAvatar2 from '../../assets/user-2.jpg';
 
@@ -19,6 +20,7 @@ class Card extends React.Component {
         super(props);
         this.state = {
             comment: '',
+            commentID: '',
             editComment: false,
         }
     }
@@ -29,12 +31,12 @@ class Card extends React.Component {
     }
     handleSubmit = (e)=>{
         e.preventDefault();
+        const postID = this.props.post._id;
+        const { comment, commentID } = this.state;
         if(this.state.editComment){
-
+            this.props.editComment({postID, content: comment, commentID})
         }else{
-            const { postID } = this.props;
-            const { comment } = this.state;
-            this.props.addComment({postID, comment})
+            this.props.addComment({postID, content: comment})
         }
     }
 
@@ -45,32 +47,62 @@ class Card extends React.Component {
         
     }
 
-    enableEditComment = ( currentContent )=>{
-        console.log('ok, enable edit')
+    enableEditComment = ( currentContent, commentID )=>{
         this.setState((prevState)=>{
             if(!prevState.editComment){
                 return {
                     editComment: true,
-                    comment: currentContent
+                    comment: currentContent,
+                    commentID
                 }
             }else{
                 return {
                     editComment: false,
-                    comment: ''
+                    comment: '',
+                    commentID: ''
                 }
             }
         })
     }
+
+    deletePost = () => {
+        const { removePost } = this.props;
+        removePost(this.props.post._id);
+    }
+    deleteComment = (comment)=>{
+        const { postID, _id, } = comment;
+        this.props.removeComment({postID, commentID: _id})
+    }
+    renderComments = ()=>{
+        const { post } = this.props;
+        if(post){
+            if(Array.isArray(post.comments)){
+                return post.comments.map(
+                    comment => <Comment 
+                                    key={comment._id} 
+                                    enableEditComment={this.enableEditComment}  
+                                    deleteComment={this.deleteComment}
+                                    comment={comment}/>
+                    )
+            }else{
+                console.log('Something went wrong');
+            }
+        }else{
+
+        }
+    }
     render(){
-        const { listImage = [], isEditPost, post} = this.props;
+        const { listImage = [], isEditPost, post, auth} = this.props;
         console.log(this.props.post)
-        let content, avatar, username, uid, created_at;
+        let content, avatar, username, uid, created_at, numComments, numLikes;
         if(post){
             content = post.content;
             username = post.owner.username;
             uid = post.owner.uid;
             avatar = post.owner.avatar;
-            created_at = new Date(post.created_at).toLocaleDateString()
+            created_at = new Date(post.created_at).toLocaleDateString();
+            numLikes = post.numLikes;
+            numComments = post.numComments
         }
         return (
             <CardWrapper>
@@ -80,8 +112,13 @@ class Card extends React.Component {
                         <h1>{username}</h1>
                         <p>{created_at}</p>
                     </CardAuthor>
-                    <Edit onClick={this.handleEditPost}/>
-                    <Delete />
+                    {
+                        uid === auth.currentUser.uid && 
+                        <React.Fragment>
+                            <Edit onClick={this.handleEditPost}/>
+                            <Delete onClick={this.deletePost} />
+                        </React.Fragment>
+                    }
                 </CardTitle>
                 <CardBody>
                     <p>{ content && content}</p>
@@ -94,7 +131,7 @@ class Card extends React.Component {
                         <React.Fragment>
                             <CardFooter>
                                 <Heart />
-                                <p>8</p>
+                                <p>{numLikes ? numLikes : 0}</p>
                                 <FriendListLiked>
                                     <FriendLiked>
                                         <FriendAvatar src={userAvatar2} alt='user-avatar' />
@@ -107,15 +144,13 @@ class Card extends React.Component {
                                     </FriendLiked>
                                 </FriendListLiked>
                                 <Message />
-                                <p>17</p>
+                                <p>{numComments ? numComments : 0}</p>
                             </CardFooter>
                             <ListComments>
-                                <Comment 
-                                    enableEditComment={this.enableEditComment} 
-                                    content='this is a pretty girl'/>
+                                {this.renderComments()}
                             </ListComments>
                             <FormComment>
-                                <FormInput>
+                                <FormInput onSubmit={this.handleSubmit}>
                                     <input 
                                         onChange={this.handleChange}
                                         type='text' 
@@ -133,10 +168,18 @@ class Card extends React.Component {
     }
     
 }
+const mapStateToProps = state => {
+    return {
+        auth: state.auth
+    }
+}
 
 const mapDispathToProps = dispatch => {
     return {
-        addComment: payload => dispatch(addCommentToPostStart(payload))
+        addComment: payload => dispatch(addCommentToPostStart(payload)),
+        editComment: payload => dispatch(editCommentStart(payload)),
+        removePost: postID => dispatch(deletePostStart(postID)),
+        removeComment: payload => dispatch(removeCommentStart(payload))
     }
 }
-export default connect(null, mapDispathToProps)(Card);
+export default connect(mapStateToProps, mapDispathToProps)(Card);

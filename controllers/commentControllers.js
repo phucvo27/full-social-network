@@ -23,6 +23,7 @@ exports.createComment = catchAsync(async (req, res, next)=>{
     const postID = req.params.postID;
     const owner = req.user._id;
     const { content } = req.body;
+    console.log(req.body)
     if(content){
         if(ObjectId.isValid(postID)){
             // Check does that post still exist

@@ -74,8 +74,9 @@ export const CardFooter = styled.div`
         width: 1.8rem;
         height: 1.8rem;
         fill: #655858;
+        cursor: pointer;
     }
-    &:hover > svg {
+    > svg:hover  {
         fill: orange;
     }
 

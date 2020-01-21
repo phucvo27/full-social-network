@@ -3,7 +3,6 @@ import { connect} from 'react-redux';
 import {Title, LastestPhoto, Content, Profile, Row, Empty } from './User.styled';
 import { Grid, LeftContent, CenterContent, RightContent } from '../../components/GridWrapper/GridWrapper.styled'
 import Card from '../../components/Card/Card.component';
-//import image from '../../assets/test-image.jpg';
 
 import Popup from '../../components/Popup/Popup.component';
 class Timeline extends React.Component {
@@ -23,16 +22,17 @@ class Timeline extends React.Component {
         this.setState(()=>({postForEdit: null}));
     }
     renderCard = ()=>{
-        console.log('in render card')
         const { match } = this.props.match;
-        // const allPosts = Object.keys(this.props.posts);
         if(this.props.posts[match.params.uid]){
             const userPosts = this.props.posts[match.params.uid]; 
             if(userPosts){
-                return userPosts.map(post => {
-                    if(post.image !== null){
+                const filterPosts = Object.keys(this.props.posts[match.params.uid]).filter(postID => userPosts[postID] )
+                return filterPosts.map(postID => {
+                    const post = userPosts[postID];
+                    console.log(post)
+                    if(post.image){
                         const image = post.image.replace("public",'http://localhost:5000')
-                        return <Card key={post._id} listImage={[image]} post={post} postID={post._id} showPopUp={this.handleShowPopUp} />
+                        return <Card key={post._id} listImage={[image]} post={post} showPopUp={this.handleShowPopUp} />
                     }else{
                         return <Card key={post._id} post={post} showPopUp={this.handleShowPopUp}/>
                     }
@@ -102,15 +102,5 @@ const mapStateToProps = state => {
         posts: state.posts
     }
 }
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         getAllPosts: uid => dispatch(getAllPost(uid))
-//     }
-// }
 
 export default connect(mapStateToProps)(Timeline);
-/*
-<Card listImage={['https://html.crumina.net/html-olympus/img/post-photo6.jpg']}/>
-<Card />
-<Card listImage={[image]} />
-*/

@@ -9,7 +9,7 @@ const mapStateToProps = (state , ownProps) => {
     const { match } = ownProps.match;
     const uid = match.params.uid;
     return {
-        isLoading: !(state.user[uid] && state.posts[uid]) ? true : false
+        isLoading: !(state.users[uid] && state.posts[uid]) ? true : false
     }
 }
 

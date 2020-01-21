@@ -27,7 +27,7 @@ const Loading = ()=>{
                         <img src={html5} alt="" />
                     </Face>
                     <Face className='face--bottom'>
-                        <img src={sass} />
+                        <img src={sass} alt=""/>
                     </Face>
 
                 </Cube>

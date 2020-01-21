@@ -1,16 +1,12 @@
-export const convertListToObject = ( lists, isPost = false )=>{
-    const obj = {};
+export const convertArrayToObject = arr =>{
+    console.log(arr.length)
+    let obj = {};
 
-    if(lists.length > 0){
-        for(let i = 0; i < lists.length; i++){
-            if(isPost){
-                obj[lists[i]._id] = lists[i];
-            }else{
-                obj[lists[i].uid] = lists[i];
-            }
-        }
-        return lists;
-    }else{
-        return null;
+    if(arr.length > 0){
+        for(let i = 0; i < arr.length; i++){
+            obj[`${arr[i]._id}`] = arr[i];
+        }  
     }
+    console.log(obj)
+    return obj;
 }

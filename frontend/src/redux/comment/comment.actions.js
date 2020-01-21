@@ -1,4 +1,6 @@
 import {
+    GET_ALL_COMMENT_START,
+    GET_ALL_COMMENT_SUCCESS,
     ADD_COMMENT_TO_POST_START,
     ADD_COMMENT_TO_POST_SUCCESS,
     EDIT_COMMENT_START,
@@ -6,6 +8,20 @@ import {
     REMOVE_COMMENT_FROM_POST_START,
     REMOVE_COMMENT_FROM_POST_SUCCESS
 } from './comment.types'
+
+export const getAllCommentsStart = postID => {
+    return {
+        type: GET_ALL_COMMENT_START,
+        postID
+    }
+}
+export const getAllCommentsSuccess = (postID, payload)=>{
+    return {
+        type: GET_ALL_COMMENT_SUCCESS,
+        postID,
+        payload
+    }
+}
 
 
 export const addCommentToPostStart = (payload)=>{
@@ -23,7 +39,7 @@ export const addCommentToPostSuccess = payload => {
         payload
     }
 }
-export const editComment = payload => {
+export const editCommentStart = payload => {
     return {
         type: EDIT_COMMENT_START,
         payload
@@ -47,10 +63,10 @@ export const removeCommentStart = payload => {
     }
 }
 
-export const removeCommentSuccess = ({postID, commentID}) => {
+export const removeCommentSuccess = (payload) => {
     return {
         type: REMOVE_COMMENT_FROM_POST_SUCCESS,
-        postID,
-        commentID
+        postID: payload.postID,
+        payload
     }
 }

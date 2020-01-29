@@ -55,7 +55,7 @@ export const recieveFriendRequest = payload => {
     }
 }
 
-export const receiveFriendAccteped = payload => {
+export const receiveFriendAccepted = payload => {
     /*
         {uid , avatar, username }
     */

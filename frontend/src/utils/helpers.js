@@ -1,3 +1,8 @@
+import {
+    recieveMessageStart,
+    recieveNotificationStart
+} from '../redux/notification/notification.actions';
+
 export const convertArrayToObject = arr =>{
     console.log(arr.length)
     let obj = {};
@@ -9,4 +14,14 @@ export const convertArrayToObject = arr =>{
     }
     console.log(obj)
     return obj;
+}
+
+export const helperSocketListener = (socket, dispatch) => {
+    socket.on('message', data => {
+        dispatch(recieveMessageStart(data))
+    });
+    socket.on('notification',data => {
+        dispatch(recieveNotificationStart(data))
+    })
+
 }

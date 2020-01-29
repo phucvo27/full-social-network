@@ -1,10 +1,6 @@
 import { takeLatest, put, call, all } from 'redux-saga/effects';
 import { USER_LOGIN_START, USER_LOGOUT_START } from './auth.types';
 import { userLoginSuccess, userLoginFail, userLogOutSuccess } from './auth.actions';
-import { getSocketConnection } from '../socket/socket.actions';
-import getSocket from '../../utils/getSocketConnection';
-// Watcher
-
 
 export function* logOut(){
     const res = yield fetch('http://localhost:5000/api/auth/logout', {
@@ -37,13 +33,6 @@ export function* signInWithEmail(action){
             yield put(
                 userLoginSuccess(jsonData.data.user)
             )
-            const { uid } = jsonData.data.user;
-            const socket = getSocket(uid);
-            socket.on('connect', ()=>{
-                console.log(socket.connected);
-                console.log(socket.id);
-                yield put(getSocketConnection(socket))
-            })
         }else{
             throw Error(res.data.message);
         }

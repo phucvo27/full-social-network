@@ -26,19 +26,21 @@ exports.sendNotifications = async ( type, uid , body = {})=>{
     console.log(`SocketID of user ${uid} : ${socketID}`);
     //console.log(io)
     try{
+        
         if(type){
-            if(type === 'message'){
-                io.to(socketID).emit('newMessage', body);
-            }else if(type === 'notification'){
-                // body : { uid , username , avatar };
-                if(body.type === 'friend-request'){
-                    io.to(socketID).emit('friend-request', body);
-                }else if(body.type === 'liked'){
-                    io.to(socketID).emit('like', body);
-                }else if(body.type === 'comment'){
-                    io.to(socketID).emit('comment', body);
-                }
-            }
+            io.to(socketID).emit(`${type}`, body)
+            // if(type === 'message'){
+            //     io.to(socketID).emit('newMessage', body);
+            // }else if(type === 'notification'){
+            //     // body : { uid , username , avatar };
+            //     if(body.type === 'friend-request'){
+            //         io.to(socketID).emit('friend-request', body);
+            //     }else if(body.type === 'liked'){
+            //         io.to(socketID).emit('like', body);
+            //     }else if(body.type === 'comment'){
+            //         io.to(socketID).emit('comment', body);
+            //     }
+            // }
             
         }else{
             throw new Error('Missing Type')

@@ -9,8 +9,9 @@ import ChatPage from './pages/Chat/Chat.component';
 
 import { getBasicUserInforStart } from './redux/user/user.actions';
 import { getAllPost } from './redux/post/post.actions';
-// import { getSocketConnection } from './redux/socket/socket.actions';
-// import getSocket from './utils/getSocketConnection';
+import { helperSocketListener } from './utils/helpers';
+import { getSocketConnection } from './redux/socket/socket.actions';
+import getSocket from './utils/getSocketConnection';
 class App extends React.Component {
 
     constructor(props){
@@ -19,28 +20,37 @@ class App extends React.Component {
             checkingSession: false
         }
     }
+    // handle socket connection
+    shouldComponentUpdate(nextProps, nextStates){
+        if(this.props.socket === null && nextProps.socket !== null){
+            // making sure listen all event that needed for our app !
+            helperSocketListener(nextProps.socket, this.props.dispatch);
+        }
+        if(this.props.user.currentUser !== null && this.props.socket === null){
+            /*
+                this case will be happened :
+                    when user is logged in success -> get new socket
+                    When user refresh the page ( already logged in ) -> re-connect to socket server
+             */ 
+            const { uid } = this.props.user.currentUser;
+            const socket = getSocket(uid);
+            socket.on('connect', ()=>{
+                if(socket.connected){
+                    this.props.dispatch(getSocketConnection(socket))
+                }
+            })
+        }
+        return true;
+    }
     getInforAndPostOfUser = (uid)=>{
         const { getInforOfUser, getAllPosts} = this.props;
         getInforOfUser(uid);
         getAllPosts(uid);
     }
 
-    setupSocket = ()=>{
-        console.log('in didMount HomePage')
-        if(this.props.user.currentUser){
-            // const { uid } = this.props.user.currentUser;
-            // const socket = getSocket(uid);
-            // console.log(this.props)
-            // socket.on('connect', ()=>{
-            //     console.log(socket.connected);
-            //     console.log(socket.id);
-            //     this.props.setupSocket(socket)
-            // })
-        }
-    }
+    
     render(){
         const { currentUser } = this.props.user;
-        //this.setupSocket();
         return (
             <BrowserRouter> 
                 <Header />
@@ -66,7 +76,8 @@ class App extends React.Component {
 
 const mapStateToProps = (state) =>{
     return {
-        user: state.auth
+        user: state.auth,
+        socket: state.socket
     }
 }
 

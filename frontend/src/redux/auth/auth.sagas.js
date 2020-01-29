@@ -1,29 +1,12 @@
 import { takeLatest, put, call, all } from 'redux-saga/effects';
 import { USER_LOGIN_START, USER_LOGOUT_START } from './auth.types';
 import { userLoginSuccess, userLoginFail, userLogOutSuccess } from './auth.actions';
-
-
+import { getSocketConnection } from '../socket/socket.actions';
+import getSocket from '../../utils/getSocketConnection';
 // Watcher
 
 
 export function* logOut(){
-    // try{
-    //     const res = yield axios.get('http://localhost:5000/api/auth/logout', {
-    //         withCredentials: true
-    //     });
-    //     if(res.status === 200){
-    //         console.log('in if clause of logout')
-    //         yield put(
-    //             userLogOut()
-    //         )
-    //     }else{
-    //         console.log('in else clause of logout')
-    //         yield put({type: USER_LOGOUT_FAIL})
-    //     }
-    // }catch(e){
-    //     yield put({type: USER_LOGOUT_FAIL})
-    // }
-    console.log('In sigout sagas')
     const res = yield fetch('http://localhost:5000/api/auth/logout', {
         credentials:'include'
     });
@@ -54,6 +37,13 @@ export function* signInWithEmail(action){
             yield put(
                 userLoginSuccess(jsonData.data.user)
             )
+            const { uid } = jsonData.data.user;
+            const socket = getSocket(uid);
+            socket.on('connect', ()=>{
+                console.log(socket.connected);
+                console.log(socket.id);
+                yield put(getSocketConnection(socket))
+            })
         }else{
             throw Error(res.data.message);
         }

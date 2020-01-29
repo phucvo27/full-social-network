@@ -9,6 +9,8 @@ import ChatPage from './pages/Chat/Chat.component';
 
 import { getBasicUserInforStart } from './redux/user/user.actions';
 import { getAllPost } from './redux/post/post.actions';
+// import { getSocketConnection } from './redux/socket/socket.actions';
+// import getSocket from './utils/getSocketConnection';
 class App extends React.Component {
 
     constructor(props){
@@ -22,10 +24,24 @@ class App extends React.Component {
         getInforOfUser(uid);
         getAllPosts(uid);
     }
+
+    setupSocket = ()=>{
+        console.log('in didMount HomePage')
+        if(this.props.user.currentUser){
+            // const { uid } = this.props.user.currentUser;
+            // const socket = getSocket(uid);
+            // console.log(this.props)
+            // socket.on('connect', ()=>{
+            //     console.log(socket.connected);
+            //     console.log(socket.id);
+            //     this.props.setupSocket(socket)
+            // })
+        }
+    }
     render(){
         const { currentUser } = this.props.user;
-        console.log(currentUser)
-        return this.state.checkingSession ? <p>Loading</p> : (
+        //this.setupSocket();
+        return (
             <BrowserRouter> 
                 <Header />
                 <Switch>

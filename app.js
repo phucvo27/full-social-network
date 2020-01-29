@@ -47,7 +47,7 @@ app.use(cors(corsOptions))
 // });
 
 app.use((req, res, next)=>{
-    console.log(`new request at : ${req.path}`)
+    //console.log(`new request at : ${req.path}`)
     next()
 })
 

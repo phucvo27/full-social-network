@@ -45,7 +45,15 @@ class UserPage extends Component{
         const friendID = match.params.uid;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/users/request/${friendID}`);
+            const res = await fetch(`http://localhost:5000/api/users/request/${friendID}`,{
+                credentials:'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'GET'
+            });
+            const jsonData = await res.json();
+            console.log(jsonData)
             if(res.status === 200){
 
             }else{
@@ -100,13 +108,21 @@ class UserPage extends Component{
     
     render(){
         const { match } = this.props.match;
-        console.log(this.props)
+        console.log(this.props);
+        if(this.props.socket){
+            console.log(this.props.socket.id)
+            this.props.socket.on('friend-request', (data)=>{
+                console.log('this is notification');
+                console.log(data)
+            })
+        }
+        
         return (
             <UserWrapper className='root'>
                 <UserHeader>
                     <HeaderThumb>
                         <img src={imageHeader} alt='thumbnail' />
-                        <AddFriendButton>Add Friend</AddFriendButton>
+                        <AddFriendButton onClick={this.handleSendRequestAddFriend}>Add Friend</AddFriendButton>
                         <Author>
                             <AuthorAvatar>
                                 <img src='https://html.crumina.net/html-olympus/img/author-main1.jpg' alt='user-avatar' />
@@ -134,7 +150,8 @@ class UserPage extends Component{
 const mapStateToProps = state => {
     return {
         user: state.users,
-        posts: state.posts
+        posts: state.posts,
+        socket: state.socket
     }
 }
 const mapDispatchToProps = dispatch => {

@@ -12,8 +12,8 @@ exports.friendRequest = catchAsync( async (req, res, next)=>{
     if(ObjectId.isValid(friendID)){
         const userIsRequired = await User.findById(friendID);
         if(userIsRequired){
-            const isSuccess = await user.addFriendRequest(req.user, userIsRequired);
-            if(isSuccess){
+            //const isSuccess = await user.addFriendRequest(req.user, userIsRequired); // return true if success
+            if(true){
                 const body = {
                     type: 'friend-request',
                     owner: {

@@ -5,27 +5,13 @@ import { Content, Title, LastestPhoto, Profile, Row} from '../User/User.styled';
 import Card from '../../components/Card/Card.component';
 import image from '../../assets/test-image.jpg';
 import StatusForm from '../../components/StatusForm/Status-Form.component';
-import getSocket from '../../utils/getSocketConnection';
 import { connect } from 'react-redux';
+
+
+//import io from 'socket.io-client';
 
 class HomePage extends React.Component{
     
-    async componentDidMount(){
-        console.log('in didMount HomePage')
-        const { uid } = this.props.user.currentUser;
-        const socket = getSocket(uid);
-        socket.on('connect', ()=>{
-            console.log(socket.id)
-        });
-        socket.on('login-succes', (data)=>{
-            console.log('new emit message')
-            console.log(data)
-        })
-        socket.on('notification', (data)=>{
-            console.log('this is notification');
-            console.log(data)
-        })
-    }
     render(){
         console.log('in render homepage')
         return (

@@ -7,7 +7,7 @@ exports.protectRoute = async (req, res, next)=>{
     if(token){
         try {
             const tokenData = jwt.verify(token, 'ThisIsTheSecretMessage');
-            console.log(tokenData)
+            //console.log(tokenData)
             const user = await User.findById(tokenData.uid); // return null if doc doesnt exist
             
             if(user){
